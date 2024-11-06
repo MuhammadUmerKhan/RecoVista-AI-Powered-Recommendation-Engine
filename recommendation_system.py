@@ -32,6 +32,14 @@ st.markdown("""
             color: #3498DB;
             font-weight: bold;
             margin-top: 30px;
+            text-align: left;
+        }
+        /* System Content */
+        .system-content {
+            font-size: 1.8em;
+            color: #3498DB;
+            font-weight: bold;
+            margin-top: 30px;
             text-align: center;
         }
         /* Section Content */
@@ -87,6 +95,7 @@ st.markdown("""
 
 # Title Heading (appears above tabs and remains on all pages)
 st.markdown('<div class="main-title">📚 Welcome to the NLP Based Course Recommendation System 📚</div>', unsafe_allow_html=True)
+st.markdown('<div class="intro-subtitle">Your one-stop solution for finding the best courses tailored for you! 💡</div>', unsafe_allow_html=True)
 
 # Load Data
 data = pd.read_csv("./Data/Cleaned_data.csv").drop(columns='Unnamed: 0')
@@ -134,11 +143,8 @@ tab1, tab2, tab3, tab4 = st.tabs(["🏠 Home", "📋 Content-Based Recommendatio
 
 # Home Tab Content
 with tab1:
-    # st.markdown('<div class="intro-title">📚 Welcome to the NLP Based Course Recommendation System 📚</div>', unsafe_allow_html=True)
-    st.markdown('<div class="intro-subtitle">Your one-stop solution for finding the best courses tailored for you! 💡</div>', unsafe_allow_html=True)
-
     st.markdown('<div class="section-title">👋 About Me</div>', unsafe_allow_html=True)
-    st.markdown('<div class="content">Hi! I\'m Muhammad Umer Khan, an aspiring Data Scientist with a passion for Natural Language Processing (NLP) and recommendation systems. Currently pursuing my Bachelor’s in Computer Science, I have hands-on experience with projects in data science, data scraping, and building intelligent recommendation systems.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="content">Hi! I\'m Muhammad Umer Khan, an aspiring Data Scientist with a passion for Natural Language Processing (NLP). Currently pursuing my Bachelor’s in Computer Science, I have hands-on experience with projects in data science, data scraping, and building intelligent recommendation systems, Machine Learning Models.</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="section-title">🚀 Project Overview</div>', unsafe_allow_html=True)
     st.markdown("""
@@ -167,7 +173,7 @@ with tab1:
 
 # Content-Based Recommendation Tab
 with tab2:
-    st.markdown('<div class="section-title">📋 Content-Based Recommendation System</div>', unsafe_allow_html=True)
+    st.markdown('<div class="system-content">📋 Content-Based Recommendation System</div>', unsafe_allow_html=True)
     
     selected_course = st.selectbox("Choose a course", data['Title'].values)
     
@@ -181,12 +187,12 @@ with tab2:
 
 # Collaborative Recommendation Tab
 with tab3:
-    st.markdown('<div class="section-title">🤝 Collaborative Recommendation System</div>', unsafe_allow_html=True)
+    st.markdown('<div class="system-content">🤝 Collaborative Recommendation System</div>', unsafe_allow_html=True)
     st.write('<div class="section-content">🚧 This feature is under development. Please check back soon for updates!', unsafe_allow_html=True)
 
 # Hybrid Recommendation Tab
 with tab4:
-    st.markdown('<div class="section-title">🔄 Hybrid Recommendation System</div>', unsafe_allow_html=True)
+    st.markdown('<div class="system-content">🔄 Hybrid Recommendation System</div>', unsafe_allow_html=True)
     st.write('<div class="section-content">🚧 This feature is under development. Stay tuned for enhanced recommendations!', unsafe_allow_html=True)
     # st.write('<div class="section-content">🚧 This feature is under development. Please check back soon for updates!', unsafe_allow_html=True)
 
