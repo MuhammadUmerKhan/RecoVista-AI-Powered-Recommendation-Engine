@@ -1,78 +1,93 @@
-# Content-Based Recommendation System for MIT OpenCourseWare
+# Content-Based, Collaborative, and Hybrid Recommendation System
 
-This project is a content-based recommendation system that suggests MIT OpenCourseWare courses in the domains of "Environment & Sustainability: Earth Systems and Climate Science" and "Environment & Sustainability: Engineering." This project was built to showcase a content-based recommendation model that uses course attributes to suggest relevant courses, with the goal of demonstrating a recommendation system for educational data.
+Welcome to the Recommendation System project! This tool leverages content-based filtering, collaborative filtering, and hybrid approaches to provide personalized course recommendations based on various factors.
 
 ## Table of Contents
-
-1. [Introduction](#introduction)
-2. [Features](#features)
-3. [Dataset](#dataset)
-4. [Methods](#methods)
-5. [How to Run](#how-to-run)
-6. [Results](#results)
-7. [Future Work](#future-work)
-8. [Requirements](#requirements)
-9. [Acknowledgments](#acknowledgments)
+- [Overview](#overview)
+- [Project Structure](#project-structure)
+- [Technologies Used](#technologies-used)
+- [Current Work](#current-work)
+- [Planned Future Enhancements](#planned-future-enhancements)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Acknowledgments](#acknowledgments)
 
 ---
 
-## Introduction
+## Overview
+This project is a multi-faceted recommendation system designed to provide tailored course recommendations. Leveraging both content-based filtering and collaborative filtering techniques, the recommendation system caters to users' unique interests by analyzing the metadata of courses, user interactions, and hybrid methodologies.
 
-This recommendation system focuses on suggesting courses based on course attributes such as title, difficulty, description, department, and topics. The purpose of this project is to showcase my ability to build a recommendation system using a content-based approach, which can be applied to other domains as well.
+## Project Structure
 
-## Features
+- **Content-Based Filtering**: The model analyzes course metadata (e.g., course title, tags, and descriptions) to generate recommendations.
+- **Collaborative Filtering**: Upcoming feature; will use user interaction data to recommend courses based on similar users' interests.
+- **Hybrid Filtering**: Upcoming feature; combines both content and collaborative filtering to deliver robust and diverse recommendations.
 
-- **Content-based Filtering:** Recommends courses based on similarity between course attributes.
-- **Combined Dataset:** Includes course data from two domains, "Earth Systems and Climate Science" and "Engineering."
-- **Scalable Design:** The system is designed to be deployed on a web application.
+## Technologies Used
+- **Python**: Primary language for implementing recommendation algorithms.
+- **Streamlit**: Used to deploy the interactive web application.
+- **spaCy**: For natural language processing tasks.
+- **NLTK**: For text preprocessing.
+- **Pandas & NumPy**: Data manipulation and numerical operations.
+- **Scikit-learn**: Machine learning models and evaluation metrics.
 
-## Dataset
+## Current Work
+The project is progressing well with the following completed tasks:
 
-The dataset used for this project was scraped from MIT OpenCourseWare. It includes the following features for each course:
+1. **Data Collection and Preprocessing**:
+   - Scraped and combined course data for "Environment & Sustainability: Earth Systems and Climate Science" and "Environment & Sustainability: Engineering".
+   - Created a unified dataset with key columns: `['Title', 'Difficulty', 'Tags']`.
+   
+2. **Feature Engineering**:
+   - Constructed a `Tags` column by merging `Description`, `Departments`, and `Topics` columns.
+   - Cleaned strings and lists in the dataset to prepare for vectorization and similarity calculations.
+   
+3. **Content-Based Recommendation System**:
+   - Built a preliminary content-based model using `Tags` for recommending courses based on textual similarity.
 
-- **Title:** The name of the course.
-- **Difficulty:** The course difficulty level.
-- **Description:** A brief course description.
-- **Departments:** Departments offering the course.
-- **Topics:** Topics covered in the course.
+4. **Streamlit App (In Progress)**:
+   - Designed a homepage to introduce the user and project.
+   - Will soon integrate the content-based model for users to interact with the recommendation engine.
 
-## Methods
+## Planned Future Enhancements
 
-1. **Data Collection and Preprocessing (Compeleted Tasks)**
-   - Data was collected through web scraping, and features like titles, descriptions, and topics were extracted.
-   - Text preprocessing was applied to normalize the text fields.
+1. **Collaborative Filtering**:
+   - Implement user-based and item-based collaborative filtering to analyze user behaviors and preferences.
+   - Use matrix factorization techniques to enhance scalability and recommendation accuracy.
 
-2. **Feature Engineering (Ongoing Task)**
-   - Using NLP techniques to create vectors from text data (course title, description, etc.).
-   - Applying TF-IDF to the description to capture relevant keywords.
+2. **Hybrid Recommendation System**:
+   - Combine content-based and collaborative filtering for a hybrid approach, capturing both content relevance and user preference patterns.
 
-3. **Modeling (Ongoing Task)**
-   - Using cosine similarity as the similarity metric.
-   - Generating similarity scores to recommend courses based on the most similar attributes.
+3. **Advanced Streamlit Deployment**:
+   - Add tabs for each recommendation type (content-based, collaborative, and hybrid) within the Streamlit app.
+   - Improve the app’s user interface and make results more intuitive.
 
-4. **Evaluation (Ongoing Task)**
-   - Evaluating recommendations based on relevance to selected courses.
+4. **Optimization and Fine-Tuning**:
+   - Test and improve model performance with hyperparameter tuning and additional NLP techniques.
+   - Incorporate user feedback for real-time recommendation adjustments.
 
-## How to Run
+## Getting Started
 
-1. Clone this repository:
-    ```bash
-    git clone https://github.com/MuhammadUmerKhan/NLP-Powered-Recommendation-System.git
-    ```
+To set up this project locally:
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/MuhammadUmerKhan/NLP-Powered-Recommendation-System.git
+
 2. Install the required packages:
     ```bash
     pip install -r requirements.txt
     ```
-3. Run the recommendation system (soon):
+3. Run the recommendation system:
     ```bash
-    python recommend.py
+    python recommendation_system.py
     ```
 
 ## Results
 
 The recommendation system provides relevant courses based on similarity in descriptions, topics, and difficulty. Sample recommendations are included in the results.
 
-## Future Work
+## Future Workrecommend
 
 - **Collaborative Filtering:** Extend the recommendation system to include collaborative filtering.
 - **Hybrid Model:** Combine content-based and collaborative filtering approaches.
@@ -87,3 +102,5 @@ The recommendation system provides relevant courses based on similarity in descr
 
 Thanks to MIT OpenCourseWare for providing free access to high-quality educational content.
 
+
+This README file should serve as a comprehensive guide to your project, making it easy for viewers to understand the scope, progress, and future plans for your recommendation system. Let me know if you'd like further customizations!
