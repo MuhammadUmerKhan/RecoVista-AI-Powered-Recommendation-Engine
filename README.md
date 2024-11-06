@@ -45,7 +45,7 @@ The project is progressing well with the following completed tasks:
 3. **Content-Based Recommendation System**:
    - Built a preliminary content-based model using `Tags` for recommending courses based on textual similarity.
 
-4. **Streamlit App (In Progress)**:
+4. **Streamlit App**:
    - Designed a homepage to introduce the user and project.
    - Will soon integrate the content-based model for users to interact with the recommendation engine.
 
