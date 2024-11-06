@@ -151,7 +151,7 @@ with tab1:
         <div class="content">
             This project focuses on creating a comprehensive <span class="highlight">Course Recommendation System</span> using advanced NLP techniques. Here’s what we achieved:
             <ul>
-                <li><span class="highlight">Data Collection 🗂️</span>: Scraped relevant data from multiple sections on courses in Environment & Sustainability.</li>
+                <li><span class="highlight">Data Collection 🗂️</span>: Scraped relevant <a href="https://ocw.mit.edu/collections/environment/" target="_blank" style="color: #2980B9;">data</a> from multiple sections on courses in Environment & Sustainability.</li>
                 <li><span class="highlight">Content-based Filtering 🔍</span>: Utilized course descriptions and topics to recommend similar courses.</li>
                 <li><span class="highlight">Collaborative Filtering & Hybrid Models 🤝🔄</span>: Planned for further development to enhance recommendation accuracy.</li>
                 <li><span class="highlight">Deployment 🌐</span>: Built a user-friendly app with an intuitive interface for course recommendations.</li>
