@@ -80,7 +80,7 @@ To set up this project locally:
     ```
 3. Run the recommendation system:
     ```bash
-    python recommendation_system.py
+    streamlit run recommendation_system.py
     ```
 
 ## Results
