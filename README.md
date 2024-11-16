@@ -102,5 +102,6 @@ The recommendation system provides relevant courses based on similarity in descr
 
 Thanks to MIT OpenCourseWare for providing free access to high-quality educational content.
 
+---
 
 This README file should serve as a comprehensive guide to your project, making it easy for viewers to understand the scope, progress, and future plans for your recommendation system. Let me know if you'd like further customizations!
