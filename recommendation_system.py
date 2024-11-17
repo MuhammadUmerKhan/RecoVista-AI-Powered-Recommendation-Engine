@@ -135,13 +135,16 @@ cosine_matrix = cosine_similarity(tfidf_matrix, tfidf_matrix)
 
 # Define recommendation function
 def get_recommendations(title, cosine_sim=cosine_matrix, data=data, top_n=5):
-    idx = data[data['Title'] == title].index[0]
-    sim_scores = list(enumerate(cosine_sim[idx]))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-    sim_scores = sim_scores[1:top_n + 1]
-    course_indices = [i[0] for i in sim_scores]
-    
-    return data.iloc[course_indices][['Title', 'Description']]
+    try:
+        idx = data.loc[data['Title'] == title].index[0]  # Faster lookup with .loc
+        sim_scores = sorted(
+            enumerate(cosine_sim[idx]), key=lambda x: x[1], reverse=True
+        )[1 : top_n + 1]  # Skip the first (itself)
+        course_indices = [i[0] for i in sim_scores]
+        return data.iloc[course_indices][['Title', 'Description']]
+    except IndexError:
+        st.error("The selected title was not found. Please choose a valid course.")
+
 
 # Tabs for each recommendation system
 tab1, tab2, tab3, tab4 = st.tabs(["🏠 Home", "📋 Content-Based Recommendation", "🤝 Collaborative Recommendation", "🔄 Hybrid Recommendation"])
@@ -165,8 +168,8 @@ with tab1:
             <ul>
                 <li><span class="highlight">📋 Content-Based Filtering</span>: Leveraged course descriptions, topics, and departments to suggest similar courses.</li>
                 <li><span class="highlight">🤝 Collaborative Filtering</span>: Developed a movie recommendation system using user interactions.</li>
-                <li><span class="highlight">🔄 Hybrid Model</span>: Planned for combining content and collaborative methods for enhanced recommendations.</li>
-                <li><span class="highlight">🌐 Deployment</span>: Built an interactive, user-friendly interface using Streamlit for seamless recommendations.</li>
+                <li><span class="highlight">🔄Hybrid Model</span>: Planned for combining content and collaborative methods for enhanced recommendations.</li>
+                <li><span class="highlight">🌐Deployment</span>: Built an interactive, user-friendly interface using Streamlit for seamless recommendations.</li>
             </ul>
         </div>
     """, unsafe_allow_html=True)
@@ -245,11 +248,10 @@ with tab3:
 
     # Define function for recommendations
     def get_similar_movies(movie, n=5):
-        idx = movie_lst.get_loc(movie)  # Use .get_loc() to fetch the index of a movie
+        idx = movie_to_user_pvt.index.get_loc(movie)  # Faster indexing with get_loc
         knn_input = movie_to_user_pvt.iloc[idx].values.reshape(1, -1)
         distances, indices = knn_movie_model.kneighbors(knn_input, n_neighbors=n + 1)
-        similar_movies = [movie_lst[i] for i in indices.flatten()[1:]]  # Exclude the selected movie
-        return similar_movies
+        return [movie_to_user_pvt.index[i] for i in indices.flatten()[1:]]  # Exclude self
 
     def get_imdb_url(movie_title):
         try:
@@ -308,5 +310,5 @@ with tab4:
 # Footer
 st.markdown("""
     <div class="footer">
-        Developed by <a href="https://portfolio-sigma-mocha-67.vercel.app/" target="_blank" style="color: #2980B9;">Muhammad Umer Khan</a>. Powered by Spacy and TF-IDF. 🌐
+        Developed by <a href="https://portfolio-sigma-mocha-67.vercel.app/" target="_blank" style="color: #2980B9;">Muhammad Umer Khan</a>. Powered by Machine Learning. 🧠
     </div>""", unsafe_allow_html=True)
