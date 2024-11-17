@@ -3,17 +3,20 @@ import pandas as pd
 import streamlit as st
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
+from imdb import IMDb
 import spacy
 import joblib as jb
 import numpy as np
+
+ia = IMDb()
 
 # Load Spacy model
 nlp = spacy.load("en_core_web_sm")
 
 # Set page configuration for Streamlit
 st.set_page_config(
-    page_title="Course Recommendation System",
-    page_icon="📚",
+    page_title="Recommendation System",
+    page_icon="🤖",
     layout="centered",
 )
 
@@ -215,6 +218,10 @@ with tab2:
             st.warning("⚠️ Please select a movie from the dropdown to proceed.")
 
 # Collaborative Recommendation Tab
+import streamlit as st
+
+import streamlit as st
+
 with tab3:
     st.markdown('<div class="system-content">🤝 Item-Item Collaborative Movie Recommendation System</div>', unsafe_allow_html=True)
     st.text(" ")
@@ -223,10 +230,14 @@ with tab3:
             <span class="highlight">📝 Data Collection:</span> Used the 
             <a href="https://grouplens.org/datasets/movielens/" target="_blank" style="color: #2980B9;">MovieLens 100K Dataset</a>, 
             which includes user ratings for movies. This dataset enabled the creation of a recommendation system that identifies item-item similarities 
-            based on user preferences. 🎥 
+            based on user preferences 🎥.
+            <span class="highlight"><br>🔗 Additionally,</span>
+             movie metadata such as the cover images and IMDb URLs are collected using the 
+            <a href="https://pypi.org/project/IMDbPY/" target="_blank" style="color: #2980B9;">IMDbPY library</a>, which allows access to movie information, including movie posters and links to the IMDb pages. 
+            If the movie image is not available, a default placeholder image is displayed.
         </div>
     """, unsafe_allow_html=True)
-
+    
     # Load KNN model and movie pivot data
     knn_movie_model = jb.load("./models/item_item_knn_model.joblib")
     movie_to_user_pvt = pd.read_csv("./Data/movie_to_user_pivot.csv", index_col='Movie title')
@@ -240,10 +251,28 @@ with tab3:
         similar_movies = [movie_lst[i] for i in indices.flatten()[1:]]  # Exclude the selected movie
         return similar_movies
 
+    def get_imdb_url(movie_title):
+        try:
+            movies = ia.search_movie(movie_title)
+            
+            if movies:
+                movie = movies[0]
+                movie_id = movie.getID()
+                image_url = movie.get('full-size cover url')
+                
+                # Return a default image if the movie image is not available
+                if not image_url:
+                    image_url = "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
+                
+                return f"https://www.imdb.com/title/tt{movie_id}/", image_url
+            else:
+                return None, "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
+        except Exception as e:
+            return None, "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
+
     # User inputs
     st.text(" ")
     selected_movie = st.selectbox("🎥 Select a Movie", ["Please Select"] + list(movie_lst))
-    
     n_recommendations = st.slider("🔢 Number of Recommendations", 1, 10, 5)
 
     if st.button("🎯 Get Recommendations"):
@@ -252,11 +281,22 @@ with tab3:
             
             st.markdown("<div class='recommendation-title'>🎬 Recommended Movies:</div>", unsafe_allow_html=True)
             
+            # Create columns for images and links
+            cols = st.columns(4)  # Create 4 columns for the layout
+            
             for idx, movie in enumerate(similar_movies, start=1):
-                st.markdown(f"<div class='recommendation-desc'>{idx}. {movie}</div>", unsafe_allow_html=True)
-                st.markdown('<div class="separator"></div>', unsafe_allow_html=True)
+                imdb_url, image_url = get_imdb_url(movie)
+                
+                # Distribute the movies in columns
+                col_idx = idx % 4  # Use modulo to cycle through the columns
+                with cols[col_idx]:
+                    st.image(image_url, width=120)  # Display the movie image
+                    st.markdown(f"[🎬 {movie} on IMDb]({imdb_url})", unsafe_allow_html=True)
+                
+            st.markdown('<div class="separator"></div>', unsafe_allow_html=True)
         else:
             st.warning("⚠️ Please select a movie from the dropdown to proceed.")
+
 
 
 # Hybrid Recommendation Tab
