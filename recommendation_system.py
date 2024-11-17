@@ -4,6 +4,8 @@ import streamlit as st
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 import spacy
+import joblib as jb
+import numpy as np
 
 # Load Spacy model
 nlp = spacy.load("en_core_web_sm")
@@ -94,8 +96,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Title Heading (appears above tabs and remains on all pages)
-st.markdown('<div class="main-title">📚 Welcome to the NLP Based Course Recommendation System 📚</div>', unsafe_allow_html=True)
-st.markdown('<div class="intro-subtitle">Your one-stop solution for finding the best courses tailored for you! 💡</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">💻 Welcome to the NLP Based Course Recommendation System 💻</div>', unsafe_allow_html=True)
+st.markdown('<div class="intro-subtitle">Your one-stop solution for finding the best recommendation for you! 💡</div>', unsafe_allow_html=True)
 
 # Load Data
 data = pd.read_csv("./Data/Cleaned_data.csv").drop(columns='Unnamed: 0')
@@ -143,52 +145,119 @@ tab1, tab2, tab3, tab4 = st.tabs(["🏠 Home", "📋 Content-Based Recommendatio
 
 # Home Tab Content
 with tab1:
-    st.markdown('<div class="section-title">👋 About Me</div>', unsafe_allow_html=True)
-    st.markdown('<div class="content">Hi! I\'m Muhammad Umer Khan, an aspiring Data Scientist with a passion for Natural Language Processing (NLP). Currently pursuing my Bachelor’s in Computer Science, I have hands-on experience with projects in data science, data scraping, and building intelligent recommendation systems, Machine Learning Models.</div>', unsafe_allow_html=True)
-
-    st.markdown('<div class="section-title">🚀 Project Overview</div>', unsafe_allow_html=True)
+    st.markdown('<div class="system-content">👋 About Me</div>', unsafe_allow_html=True)
     st.markdown("""
         <div class="content">
-            This project focuses on creating a comprehensive <span class="highlight">Course Recommendation System</span> using advanced NLP techniques. Here’s what we achieved:
+            Hi! I’m <span class="highlight">Muhammad Umer Khan</span>, an aspiring Data Scientist passionate about 
+            <span class="highlight">🤖 Natural Language Processing (NLP)</span> and 🧠 Machine Learning. 
+            Currently pursuing my Bachelor’s in Computer Science, I bring hands-on experience in developing intelligent recommendation systems, 
+            performing data analysis, and building machine learning models. 🚀
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="section-title">🎯 Project Overview</div>', unsafe_allow_html=True)
+    st.markdown("""
+        <div class="content">
+            This project is a culmination of my skills in NLP and recommendation systems. Here's what it encompasses:
             <ul>
-                <li><span class="highlight">Data Collection 🗂️</span>: Scraped relevant <a href="https://ocw.mit.edu/collections/environment/" target="_blank" style="color: #2980B9;">data</a> from multiple sections on courses in Environment & Sustainability.</li>
-                <li><span class="highlight">Content-based Filtering 🔍</span>: Utilized course descriptions and topics to recommend similar courses.</li>
-                <li><span class="highlight">Collaborative Filtering & Hybrid Models 🤝🔄</span>: Planned for further development to enhance recommendation accuracy.</li>
-                <li><span class="highlight">Deployment 🌐</span>: Built a user-friendly app with an intuitive interface for course recommendations.</li>
+                <li><span class="highlight">📋 Content-Based Filtering</span>: Leveraged course descriptions, topics, and departments to suggest similar courses.</li>
+                <li><span class="highlight">🤝 Collaborative Filtering</span>: Developed a movie recommendation system using user interactions.</li>
+                <li><span class="highlight">🔄 Hybrid Model</span>: Planned for combining content and collaborative methods for enhanced recommendations.</li>
+                <li><span class="highlight">🌐 Deployment</span>: Built an interactive, user-friendly interface using Streamlit for seamless recommendations.</li>
             </ul>
         </div>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="section-title">🔧 Technologies Used</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">💻 Technologies & Tools</div>', unsafe_allow_html=True)
     st.markdown("""
         <div class="content">
-            - <span class="highlight">Languages & Libraries</span>: Python, Pandas, Scikit-Learn, Spacy, TF-IDF, and Streamlit<br>
-            - <span class="highlight">Recommendation Approaches</span>: Content-based filtering, Collaborative filtering, and Hybrid models<br>
-            - <span class="highlight">Deployment</span>: Streamlit for interactive interface and easy deployment.
+            <ul>
+                <li><span class="highlight">🔤 Languages & Libraries</span>: Python, Pandas, Scikit-Learn, Spacy, TF-IDF, Nearest Neighbors, Scipy.</li>
+                <li><span class="highlight">⚙️ Approaches</span>: Content-Based Filtering, Collaborative Filtering, and Hybrid Methods</li>
+                <li><span class="highlight">🌐 Deployment</span>: Streamlit for web-based interactive systems</li>
+            </ul>
         </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown('<div class="section-title">🌟 Why This Project?</div>', unsafe_allow_html=True)
+    st.markdown("""
+        <div class="content">
+            This project reflects my expertise and dedication to solving real-world problems through data science. 
+            It bridges the gap between technical innovation and user-friendly application design. 
+            I aim to enhance users' experiences by recommending the most relevant courses tailored to their interests. ✨
+        </div>
+    """, unsafe_allow_html=True)
 
 
 # Content-Based Recommendation Tab
 with tab2:
-    st.markdown('<div class="system-content">📋 Content-Based Recommendation System</div>', unsafe_allow_html=True)
+    st.markdown('<div class="system-content">📋 Content-Based Recommendation System</div><br>', unsafe_allow_html=True)
     
-    selected_course = st.selectbox("Choose a course", data['Title'].values)
+    st.markdown("""
+        <div class="content">
+            <span class="highlight">📝 Data Collection:</span> Scraped comprehensive course data from the 
+            <a href="https://ocw.mit.edu/collections/environment/" target="_blank" style="color: #2980B9;">MIT OpenCourseWare Environment & Sustainability</a> sections. 
+            This dataset was utilized to create a system that recommends courses based on content similarity. 💡
+        </div><br>
+    """, unsafe_allow_html=True)
     
-    if st.button("Get Recommendations"):
-        recommendations = get_recommendations(selected_course)
-        
-        for no, (idx, row) in enumerate(recommendations.iterrows(), start=1):
-            st.markdown(f"<div class='recommendation-title'>{no}. {row['Title']}</div>", unsafe_allow_html=True)
-            st.markdown(f"<div class='recommendation-desc'>{row['Description']}</div>", unsafe_allow_html=True)
-            st.markdown('<div class="separator"></div>', unsafe_allow_html=True)
+    selected_course = st.selectbox("🔍 Choose a course", ["Please Select"] + list(data['Title'].values))
+    
+    if st.button("✨ Get Recommendations"):
+        if selected_course != "Please Select":
+            recommendations = get_recommendations(selected_course)
+            
+            for no, (idx, row) in enumerate(recommendations.iterrows(), start=1):
+                st.markdown(f"<div class='recommendation-title'>{no}. {row['Title']}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='recommendation-desc'>{row['Description']}</div>", unsafe_allow_html=True)
+                st.markdown('<div class="separator"></div>', unsafe_allow_html=True)
+        else:
+            st.warning("⚠️ Please select a movie from the dropdown to proceed.")
 
 # Collaborative Recommendation Tab
 with tab3:
-    st.markdown('<div class="system-content">🤝 Collaborative Recommendation System</div>', unsafe_allow_html=True)
-    st.write('<div class="section-content">🚧 This feature is under development. Please check back soon for updates!', unsafe_allow_html=True)
+    st.markdown('<div class="system-content">🤝 Item-Item Collaborative Movie Recommendation System</div>', unsafe_allow_html=True)
+    st.text(" ")
+    st.markdown("""
+        <div class="content">
+            <span class="highlight">📝 Data Collection:</span> Used the 
+            <a href="https://grouplens.org/datasets/movielens/" target="_blank" style="color: #2980B9;">MovieLens 100K Dataset</a>, 
+            which includes user ratings for movies. This dataset enabled the creation of a recommendation system that identifies item-item similarities 
+            based on user preferences. 🎥 
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Load KNN model and movie pivot data
+    knn_movie_model = jb.load("./models/item_item_knn_model.joblib")
+    movie_to_user_pvt = pd.read_csv("./Data/movie_to_user_pivot.csv", index_col='Movie title')
+    movie_lst = movie_to_user_pvt.index
+
+    # Define function for recommendations
+    def get_similar_movies(movie, n=5):
+        idx = movie_lst.get_loc(movie)  # Use .get_loc() to fetch the index of a movie
+        knn_input = movie_to_user_pvt.iloc[idx].values.reshape(1, -1)
+        distances, indices = knn_movie_model.kneighbors(knn_input, n_neighbors=n + 1)
+        similar_movies = [movie_lst[i] for i in indices.flatten()[1:]]  # Exclude the selected movie
+        return similar_movies
+
+    # User inputs
+    st.text(" ")
+    selected_movie = st.selectbox("🎥 Select a Movie", ["Please Select"] + list(movie_lst))
+    
+    n_recommendations = st.slider("🔢 Number of Recommendations", 1, 10, 5)
+
+    if st.button("🎯 Get Recommendations"):
+        if selected_movie != "Please Select":
+            similar_movies = get_similar_movies(selected_movie, n_recommendations)
+            
+            st.markdown("<div class='recommendation-title'>🎬 Recommended Movies:</div>", unsafe_allow_html=True)
+            
+            for idx, movie in enumerate(similar_movies, start=1):
+                st.markdown(f"<div class='recommendation-desc'>{idx}. {movie}</div>", unsafe_allow_html=True)
+                st.markdown('<div class="separator"></div>', unsafe_allow_html=True)
+        else:
+            st.warning("⚠️ Please select a movie from the dropdown to proceed.")
+
 
 # Hybrid Recommendation Tab
 with tab4:
