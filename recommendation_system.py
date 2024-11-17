@@ -309,5 +309,4 @@ with tab4:
 st.markdown("""
     <div class="footer">
         Developed by <a href="https://portfolio-sigma-mocha-67.vercel.app/" target="_blank" style="color: #2980B9;">Muhammad Umer Khan</a>. Powered by Spacy and TF-IDF. 🌐
-    </div>
-""", unsafe_allow_html=True)
+    </div>""", unsafe_allow_html=True)
