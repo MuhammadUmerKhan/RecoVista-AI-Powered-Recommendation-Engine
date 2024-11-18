@@ -23,18 +23,10 @@ This project is a recommendation system that employs **Content-Based Filtering**
 ## 🛠️ Project Structure
 
 ### 📌 **Content-Based Filtering**
-1. **Data Collection and Preprocessing**:
-   - Scraped comprehensive course data from the [MIT OpenCourseWare Environment & Sustainability](https://ocw.mit.edu/collections/environment/) sections.          This dataset was utilized to create a system that recommends courses based on content similarity. 💡
-   - Scraped and combined course data for "Environment & Sustainability: Earth Systems and Climate Science" and "Environment & Sustainability: Engineering".
-
-3. **Feature Engineering**:
-   - Constructed a `Tags` column by merging `Description`, `Departments`, and `Topics` columns.
-   - Cleaned strings and lists in the dataset to prepare for vectorization and similarity calculations.
+- Analyzes course metadata (e.g., course title, tags, and descriptions) to generate recommendations based on content similarity.
 
 ### 📌 **Collaborative Filtering**
-1. **Data Collection and Preprocessing**:
-   - Data Collection: Used the [MovieLens 100K Dataset](https://grouplens.org/datasets/movielens/), which includes user ratings for movies. This dataset enabled the creation of a recommendation system that identifies item-item similarities based on user preferences 🎥.
-   - Developed and deployed a collaborative filtering model for personalized recommendations using user preferences and similar user interactions.
+- Utilizes user interaction data to recommend courses based on similar users' preferences.
 
 ---
 
@@ -52,16 +44,17 @@ This project is a recommendation system that employs **Content-Based Filtering**
 
 ### 📘 **Content-Based Recommendation System**
 1. **Data Collection and Preprocessing**:
-   - Combined course data from *Environment & Sustainability: Earth Systems and Climate Science* and *Environment & Sustainability: Engineering*.
-   - Created a unified dataset with key columns: `['Title', 'Difficulty', 'Tags']`.
+   - Scraped comprehensive course data from the [MIT OpenCourseWare Environment & Sustainability](https://ocw.mit.edu/collections/environment/) sections.          This dataset was utilized to create a system that recommends courses based on content similarity. 💡
+   - Scraped and combined course data for "Environment & Sustainability: Earth Systems and Climate Science" and "Environment & Sustainability: Engineering".
 
 2. **Feature Engineering**:
    - Constructed a `Tags` column by merging `Description`, `Departments`, and `Topics` columns.
-   - Preprocessed data for vectorization and similarity calculations.
+   - Cleaned strings and lists in the dataset to prepare for vectorization and similarity calculations.
 
 ### 🎥 **Collaborative Recommendation System**
-1. **Data Collection**:
-   - Used the **MovieLens 100K Dataset**, which includes user ratings for movies. This dataset helped build a model that identifies item-item similarities based on user preferences.
+1. **Data Collection and Preprocessing**:
+   - Data Collection: Used the [MovieLens 100K Dataset](https://grouplens.org/datasets/movielens/), which includes user ratings for movies. This dataset           enabled the creation of a recommendation system that identifies item-item similarities based on user preferences 🎥.
+   - Developed and deployed a collaborative filtering model for personalized recommendations using user preferences and similar user interactions.
 
 2. **Model Implementation**:
    - Developed and deployed a collaborative filtering model for personalized recommendations using user preferences and similar user interactions.
