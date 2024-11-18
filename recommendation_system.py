@@ -323,9 +323,6 @@ with tab3:
             st.warning("⚠️ Please select a movie from the dropdown to proceed.")
 
 
-
-
-
 # Hybrid Recommendation Tab
 with tab4:
     st.markdown('<div class="system-content">🔄 Hybrid Recommendation System</div>', unsafe_allow_html=True)
