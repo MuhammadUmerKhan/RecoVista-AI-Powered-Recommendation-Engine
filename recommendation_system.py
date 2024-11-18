@@ -103,47 +103,7 @@ st.markdown('<div class="main-title">💻 Welcome to the NLP Based Course Recomm
 st.markdown('<div class="intro-subtitle">Your one-stop solution for finding the best recommendation for you! 💡</div>', unsafe_allow_html=True)
 
 # Load Data
-data = pd.read_csv("./Data/Cleaned_data.csv").drop(columns='Unnamed: 0')
-data['Tags'] = data['Description'] + data['Departments'] + data['Topics']
 
-# Text Preprocessor Function
-def text_preprocessor(text):
-    doc = nlp(text=str(text).lower())
-    filtered_tokens = [
-        token.lemma_ for token in doc
-        if not token.is_stop and not token.is_punct and token.pos_ in ["NOUN", "ADJ", "VERB"]
-    ]
-    return " ".join(filtered_tokens)
-
-# Applying Preprocessor Function
-data['Preprocessed_Tags'] = data['Tags'].apply(text_preprocessor)
-
-# Vectorizer
-vectorizer = TfidfVectorizer(
-    max_features=1500,
-    ngram_range=(1, 2),
-    stop_words='english',
-    max_df=0.8,
-    min_df=2
-)
-
-# Fitting to Preprocessed Column
-tfidf_matrix = vectorizer.fit_transform(data['Preprocessed_Tags'])
-
-# Calculating Similarities
-cosine_matrix = cosine_similarity(tfidf_matrix, tfidf_matrix)
-
-# Define recommendation function
-def get_recommendations(title, cosine_sim=cosine_matrix, data=data, top_n=5):
-    try:
-        idx = data.loc[data['Title'] == title].index[0]  # Faster lookup with .loc
-        sim_scores = sorted(
-            enumerate(cosine_sim[idx]), key=lambda x: x[1], reverse=True
-        )[1 : top_n + 1]  # Skip the first (itself)
-        course_indices = [i[0] for i in sim_scores]
-        return data.iloc[course_indices][['Title', 'Description']]
-    except IndexError:
-        st.error("The selected title was not found. Please choose a valid course.")
 
 
 # Tabs for each recommendation system
@@ -199,6 +159,49 @@ with tab1:
 with tab2:
     st.markdown('<div class="system-content">📋 Content-Based Recommendation System</div><br>', unsafe_allow_html=True)
     
+    
+    data = pd.read_csv("./Data/Cleaned_data.csv")
+    data['Tags'] = data['Description'] + data['Departments'] + data['Topics']
+
+    # Text Preprocessor Function
+    def text_preprocessor(text):
+        doc = nlp(text=str(text).lower())
+        filtered_tokens = [
+            token.lemma_ for token in doc
+            if not token.is_stop and not token.is_punct and token.pos_ in ["NOUN", "ADJ", "VERB"]
+        ]
+        return " ".join(filtered_tokens)
+
+    # Applying Preprocessor Function
+    data['Preprocessed_Tags'] = data['Tags'].apply(text_preprocessor)
+
+    # Vectorizer
+    vectorizer = TfidfVectorizer(
+        max_features=1500,
+        ngram_range=(1, 2),
+        stop_words='english',
+        max_df=0.8,
+        min_df=2
+    )
+
+    # Fitting to Preprocessed Column
+    tfidf_matrix = vectorizer.fit_transform(data['Preprocessed_Tags'])
+
+    # Calculating Similarities
+    cosine_matrix = cosine_similarity(tfidf_matrix, tfidf_matrix)
+
+    # Define recommendation function
+    def get_recommendations(title, cosine_sim=cosine_matrix, data=data, top_n=5):
+        try:
+            idx = data.loc[data['Title'] == title].index[0]  # Faster lookup with .loc
+            sim_scores = sorted(
+                enumerate(cosine_sim[idx]), key=lambda x: x[1], reverse=True
+            )[1 : top_n + 1]  # Skip the first (itself)
+            course_indices = [i[0] for i in sim_scores]
+            return data.iloc[course_indices][['Title', 'Description']]
+        except IndexError:
+            st.error("The selected title was not found. Please choose a valid course.")
+    
     st.markdown("""
         <div class="content">
             <span class="highlight">📝 Data Collection:</span> Scraped comprehensive course data from the 
@@ -211,19 +214,35 @@ with tab2:
     
     if st.button("✨ Get Recommendations"):
         if selected_course != "Please Select":
+            # Fetch recommendations
             recommendations = get_recommendations(selected_course)
             
-            for no, (idx, row) in enumerate(recommendations.iterrows(), start=1):
-                st.markdown(f"<div class='recommendation-title'>{no}. {row['Title']}</div>", unsafe_allow_html=True)
-                st.markdown(f"<div class='recommendation-desc'>{row['Description']}</div>", unsafe_allow_html=True)
-                st.markdown('<div class="separator"></div>', unsafe_allow_html=True)
+            # Merge with original data to get links and image URLs
+            result = recommendations.merge(data[['Title', 'Link', 'urls']], on='Title', how='left')
+            
+            # Display recommendations in rows of 4
+            cols_per_row = 4
+            num_recommendations = len(result)
+            
+            for i in range(0, num_recommendations, cols_per_row):
+                # Create a row with `cols_per_row` columns
+                cols = st.columns(cols_per_row)
+                
+                for col, (_, row) in zip(cols, result.iloc[i:i + cols_per_row].iterrows()):
+                    with col:
+                        # Display course image
+                        if not pd.isna(row['urls']):
+                            st.image(row['urls'], use_column_width=True)
+                        
+                        # Display clickable course title
+                        st.markdown(
+                            f"<a href='{row['Link']}' target='_blank' style='color: #2980B9; font-weight: bold;'>{row['Title']}</a>",
+                            unsafe_allow_html=True
+                        )
         else:
-            st.warning("⚠️ Please select a movie from the dropdown to proceed.")
+            st.warning("⚠️ Please select a course from the dropdown to proceed.")
 
-# Collaborative Recommendation Tab
-import streamlit as st
-
-import streamlit as st
+# Collaborative Recommendation TabCleaned_data
 
 with tab3:
     st.markdown('<div class="system-content">🤝 Item-Item Collaborative Movie Recommendation System</div>', unsafe_allow_html=True)
@@ -283,21 +302,27 @@ with tab3:
             
             st.markdown("<div class='recommendation-title'>🎬 Recommended Movies:</div>", unsafe_allow_html=True)
             
-            # Create columns for images and links
-            cols = st.columns(4)  # Create 4 columns for the layout
-            
-            for idx, movie in enumerate(similar_movies, start=1):
-                imdb_url, image_url = get_imdb_url(movie)
+            # Create rows of 4 recommendations each
+            for i in range(0, len(similar_movies), 4):  # Process 4 recommendations at a time
+                cols = st.columns(4)  # Create 4 columns for each row
                 
-                # Distribute the movies in columns
-                col_idx = idx % 4  # Use modulo to cycle through the columns
-                with cols[col_idx]:
-                    st.image(image_url, width=120)  # Display the movie image
-                    st.markdown(f"[🎬 {movie} on IMDb]({imdb_url})", unsafe_allow_html=True)
-                
-            st.markdown('<div class="separator"></div>', unsafe_allow_html=True)
+                # Fill the row with up to 4 movies
+                for col, movie in zip(cols, similar_movies[i:i + 4]):  # Assign movies to columns
+                    imdb_url, image_url = get_imdb_url(movie)  # Fetch IMDb data
+                    
+                    with col:
+                        # Display movie image
+                        st.image(image_url, use_column_width=True)
+                        
+                        # Display clickable movie title
+                        st.markdown(
+                            f"[🎬 {movie}]({imdb_url})",
+                            unsafe_allow_html=True
+                        )
         else:
             st.warning("⚠️ Please select a movie from the dropdown to proceed.")
+
+
 
 
 
