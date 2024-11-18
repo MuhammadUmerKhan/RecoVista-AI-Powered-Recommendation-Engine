@@ -1,6 +1,6 @@
-# Content-Based, Collaborative, and Hybrid Recommendation System
+# Content-Based and Collaborative Recommendation System
 
-Welcome to the Recommendation System project! This tool leverages content-based filtering, collaborative filtering, and hybrid approaches to provide personalized course recommendations based on various factors.
+Welcome to the Recommendation System project! This tool leverages content-based and collaborative filtering approaches to provide personalized course recommendations based on various factors.
 
 ## Table of Contents
 - [Overview](#overview)
@@ -15,13 +15,12 @@ Welcome to the Recommendation System project! This tool leverages content-based 
 ---
 
 ## Overview
-This project is a multi-faceted recommendation system designed to provide tailored course recommendations. Leveraging both content-based filtering and collaborative filtering techniques, the recommendation system caters to users' unique interests by analyzing the metadata of courses, user interactions, and hybrid methodologies.
+This project is a recommendation system designed to provide tailored course recommendations. It uses content-based filtering and collaborative filtering techniques to cater to users' unique interests by analyzing metadata and user interaction data.
 
 ## Project Structure
 
 - **Content-Based Filtering**: The model analyzes course metadata (e.g., course title, tags, and descriptions) to generate recommendations.
-- **Collaborative Filtering**: Upcoming feature; will use user interaction data to recommend courses based on similar users' interests.
-- **Hybrid Filtering**: Upcoming feature; combines both content and collaborative filtering to deliver robust and diverse recommendations.
+- **Collaborative Filtering**: The system uses user interaction data to recommend courses based on similar users' interests.
 
 ## Technologies Used
 - **Python**: Primary language for implementing recommendation algorithms.
@@ -32,39 +31,38 @@ This project is a multi-faceted recommendation system designed to provide tailor
 - **Scikit-learn**: Machine learning models and evaluation metrics.
 
 ## Current Work
-The project is progressing well with the following completed tasks:
+The project includes the following completed tasks:
+
+## Content Based Recommendation:
 
 1. **Data Collection and Preprocessing**:
    - Scraped and combined course data for "Environment & Sustainability: Earth Systems and Climate Science" and "Environment & Sustainability: Engineering".
    - Created a unified dataset with key columns: `['Title', 'Difficulty', 'Tags']`.
-   
+
 2. **Feature Engineering**:
    - Constructed a `Tags` column by merging `Description`, `Departments`, and `Topics` columns.
    - Cleaned strings and lists in the dataset to prepare for vectorization and similarity calculations.
-   
-3. **Content-Based Recommendation System**:
-   - Built a preliminary content-based model using `Tags` for recommending courses based on textual similarity.
 
-4. **Streamlit App**:
+## Content-Based Recommendation System:
+   1. **Data Collection and Preprocessing**:
+   - Data Collection: Used the MovieLens 100K Dataset, which includes user ratings for movies. This dataset enabled the creation of a recommendation system that identifies item-item similarities based on user preferences 🎥.
+   - Developed and deployed a collaborative filtering model for personalized recommendations using user preferences and similar user interactions.
+
+[**Streamlit App**](https://nlp-powered-recommendation-system.streamlit.app/):
    - Designed a homepage to introduce the user and project.
-   - Will soon integrate the content-based model for users to interact with the recommendation engine.
+   - Integrated both content-based and collaborative filtering models, providing interactive tabs for users to test each system.
 
 ## Planned Future Enhancements
 
-1. **Collaborative Filtering**:
-   - Implement user-based and item-based collaborative filtering to analyze user behaviors and preferences.
-   - Use matrix factorization techniques to enhance scalability and recommendation accuracy.
+1. **Hybrid Recommendation System**:
+   - Combine content-based and collaborative filtering for a hybrid model.
 
-2. **Hybrid Recommendation System**:
-   - Combine content-based and collaborative filtering for a hybrid approach, capturing both content relevance and user preference patterns.
+2. **Streamlit App Enhancements**:
+   - Add a tab for the hybrid recommendation system.
+   - Improve the app’s user interface.
 
-3. **Advanced Streamlit Deployment**:
-   - Add tabs for each recommendation type (content-based, collaborative, and hybrid) within the Streamlit app.
-   - Improve the app’s user interface and make results more intuitive.
-
-4. **Optimization and Fine-Tuning**:
-   - Test and improve model performance with hyperparameter tuning and additional NLP techniques.
-   - Incorporate user feedback for real-time recommendation adjustments.
+3. **Optimization and Fine-Tuning**:
+   - Test and improve model performance with hyperparameter tuning.
 
 ## Getting Started
 
@@ -82,21 +80,9 @@ To set up this project locally:
     ```bash
     streamlit run recommendation_system.py
     ```
+### Prerequisites
 
-## Results
-
-The recommendation system provides relevant courses based on similarity in descriptions, topics, and difficulty. Sample recommendations are included in the results.
-
-## Future Workrecommend
-
-- **Collaborative Filtering:** Extend the recommendation system to include collaborative filtering.
-- **Hybrid Model:** Combine content-based and collaborative filtering approaches.
-- **Deployment:** Deploy as a web application using Streamlit.
-
-## Requirements
-
-- Python 3.x
-- Required packages are listed in `requirements.txt`.
+Ensure you have Python 3.x installed. Required packages are listed in `requirements.txt`.
 
 ## Acknowledgments
 
