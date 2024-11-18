@@ -23,10 +23,18 @@ This project is a recommendation system that employs **Content-Based Filtering**
 ## 🛠️ Project Structure
 
 ### 📌 **Content-Based Filtering**
-- Analyzes course metadata (e.g., course title, tags, and descriptions) to generate recommendations based on content similarity.
+1. **Data Collection and Preprocessing**:
+   - Scraped and combined course data for "Environment & Sustainability: Earth Systems and Climate Science" and "Environment & Sustainability: Engineering".
+   - Created a unified dataset with key columns: `['Title', 'Difficulty', 'Tags']`.
+
+2. **Feature Engineering**:
+   - Constructed a `Tags` column by merging `Description`, `Departments`, and `Topics` columns.
+   - Cleaned strings and lists in the dataset to prepare for vectorization and similarity calculations.
 
 ### 📌 **Collaborative Filtering**
-- Utilizes user interaction data to recommend courses based on similar users' preferences.
+1. **Data Collection and Preprocessing**:
+   - Data Collection: Used the MovieLens 100K Dataset, which includes user ratings for movies. This dataset enabled the creation of a recommendation system that identifies item-item similarities based on user preferences 🎥.
+   - Developed and deployed a collaborative filtering model for personalized recommendations using user preferences and similar user interactions.
 
 ---
 
