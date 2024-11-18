@@ -24,10 +24,10 @@ This project is a recommendation system that employs **Content-Based Filtering**
 
 ### 📌 **Content-Based Filtering**
 1. **Data Collection and Preprocessing**:
+   - Scraped comprehensive course data from the [MIT OpenCourseWare Environment & Sustainability](https://ocw.mit.edu/collections/environment/) sections.          This dataset was utilized to create a system that recommends courses based on content similarity. 💡
    - Scraped and combined course data for "Environment & Sustainability: Earth Systems and Climate Science" and "Environment & Sustainability: Engineering".
-   - Created a unified dataset with key columns: `['Title', 'Difficulty', 'Tags']`.
 
-2. **Feature Engineering**:
+3. **Feature Engineering**:
    - Constructed a `Tags` column by merging `Description`, `Departments`, and `Topics` columns.
    - Cleaned strings and lists in the dataset to prepare for vectorization and similarity calculations.
 
