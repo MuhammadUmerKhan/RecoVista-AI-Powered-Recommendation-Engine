@@ -33,7 +33,7 @@ This project is a recommendation system that employs **Content-Based Filtering**
 
 ### 📌 **Collaborative Filtering**
 1. **Data Collection and Preprocessing**:
-   - Data Collection: Used the MovieLens 100K Dataset, which includes user ratings for movies. This dataset enabled the creation of a recommendation system that identifies item-item similarities based on user preferences 🎥.
+   - Data Collection: Used the [MovieLens 100K Dataset](https://grouplens.org/datasets/movielens/), which includes user ratings for movies. This dataset enabled the creation of a recommendation system that identifies item-item similarities based on user preferences 🎥.
    - Developed and deployed a collaborative filtering model for personalized recommendations using user preferences and similar user interactions.
 
 ---
