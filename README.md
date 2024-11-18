@@ -1,4 +1,4 @@
-# 🌟 Content-Based and Collaborative Recommendation System 🌟
+# 🌟 Recommendation System 🌟
 
 Welcome to the **Recommendation System** project! This tool leverages **Content-Based** and **Collaborative Filtering** approaches to provide personalized course recommendations tailored to user preferences. 🚀
 
