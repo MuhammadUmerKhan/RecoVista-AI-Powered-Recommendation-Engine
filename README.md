@@ -1,6 +1,6 @@
 # 🌟 Recommendation System 🌟
 
-Welcome to the **Recommendation System** project! This tool leverages **Content-Based** and **Collaborative Filtering** approaches to provide personalized course recommendations tailored to user preferences. 🚀
+Welcome to the **Recommendation System** project! This tool leverages **Content-Based**, **Collaborative Filtering**, and **Hybrid** approaches to provide personalized course recommendations tailored to user preferences. 🚀
 
 ---
 
@@ -16,17 +16,20 @@ Welcome to the **Recommendation System** project! This tool leverages **Content-
 ---
 
 ## 🔍 Overview
-This project is a recommendation system that employs **Content-Based Filtering** and **Collaborative Filtering** techniques. It provides personalized course recommendations by analyzing course metadata and user interaction data. 🎓
+This project is a recommendation system that employs **Content-Based Filtering**, **Collaborative Filtering**, and a **Hybrid Approach** to recommend courses or movies based on metadata and user interaction data. 🎓
 
 ---
 
 ## 🛠️ Project Structure
 
 ### 📌 **Content-Based Filtering**
-- Analyzes course metadata (e.g., course title, tags, and descriptions) to generate recommendations based on content similarity.
+- Analyzes metadata (e.g., course title, tags, and descriptions) to generate recommendations based on content similarity.
 
 ### 📌 **Collaborative Filtering**
-- Utilizes user interaction data to recommend courses based on similar users' preferences.
+- Utilizes user interaction data to recommend items based on similar users' preferences.
+
+### 📌 **Hybrid Approach**
+- Combines both content-based and collaborative filtering to deliver more accurate and personalized recommendations.
 
 ---
 
@@ -44,39 +47,51 @@ This project is a recommendation system that employs **Content-Based Filtering**
 
 ### 📘 **Content-Based Recommendation System**
 1. **Data Collection and Preprocessing**:
-   - Scraped comprehensive course data from the [MIT OpenCourseWare Environment & Sustainability](https://ocw.mit.edu/collections/environment/) sections.          This dataset was utilized to create a system that recommends courses based on content similarity. 💡
-   - Scraped and combined course data for "Environment & Sustainability: Earth Systems and Climate Science" and "Environment & Sustainability: Engineering".
+   - Scraped comprehensive course data from the [MIT OpenCourseWare Environment & Sustainability](https://ocw.mit.edu/collections/environment/) sections.
+   - Merged datasets for "Earth Systems and Climate Science" and "Engineering" into a unified structure for recommendation purposes.
 
 2. **Feature Engineering**:
-   - Constructed a `Tags` column by merging `Description`, `Departments`, and `Topics` columns.
-   - Cleaned strings and lists in the dataset to prepare for vectorization and similarity calculations.
+   - Constructed a `Tags` column combining course `Description`, `Departments`, and `Topics`.
+   - Vectorized the `Tags` column using TF-IDF to compute cosine similarity.
+
+3. **Recommendations**:
+   - Built a model that recommends courses similar to a given course based on content similarity.
+
+---
 
 ### 🎥 **Collaborative Recommendation System**
 1. **Data Collection and Preprocessing**:
-   - Data Collection: Used the [MovieLens 100K Dataset](https://grouplens.org/datasets/movielens/), which includes user ratings for movies. This dataset           enabled the creation of a recommendation system that identifies item-item similarities based on user preferences 🎥.
-   - Developed and deployed a collaborative filtering model for personalized recommendations using user preferences and similar user interactions.
+   - Used the [MovieLens 100K Dataset](https://grouplens.org/datasets/movielens/) to build a collaborative filtering system.
 
 2. **Model Implementation**:
-   - Developed and deployed a collaborative filtering model for personalized recommendations using user preferences and similar user interactions.
+   - Employed **SVD (Singular Value Decomposition)** for matrix factorization and user-item rating prediction.
+   - Evaluated performance using RMSE and cross-validation.
 
-### 🌐 **Streamlit App**
-- **Homepage**: Introduces the user and project.  
-- **Interactive Tabs**: Allow users to test both **Content-Based** and **Collaborative Filtering** models.
+---
 
-[🚀 **Explore the App**](https://nlp-powered-recommendation-system.streamlit.app/)
+### 🌐 **Hybrid Recommendation System**
+1. **Work Completed**:
+   - Normalized predictions from both content-based and collaborative filtering models.
+   - Combined the two predictions using weighted averaging (50% content-based, 50% collaborative).
+   - Built a function to recommend movies/courses based on this hybrid model.
+
+2. **Work Remaining**:
+   - Fine-tune the weights for content-based and collaborative filtering.
+   - Implement user feedback to adapt recommendations dynamically.
+   - Integrate the hybrid system into the Streamlit app as a new interactive tab.
 
 ---
 
 ## 🎯 Planned Future Enhancements
-1. **🔗 Hybrid Recommendation System**:
-   - Combine **Content-Based** and **Collaborative Filtering** for a hybrid model.
+1. **⚙️ Advanced Hybrid Systems**:
+   - Experiment with ensemble techniques or deep learning models for hybrid recommendations.
 
-2. **📱 Streamlit App Enhancements**:
-   - Add a tab for the hybrid recommendation system.
-   - Improve user interface and interactivity.
+2. **📈 Improved Metrics**:
+   - Introduce precision@k and recall@k for better evaluation.
 
-3. **⚙️ Optimization and Fine-Tuning**:
-   - Enhance model performance through hyperparameter tuning and feedback integration.
+3. **📱 Streamlit UI Enhancements**:
+   - Include advanced filtering options for recommendations.
+   - Add visualizations (e.g., bar charts for preferences, popularity trends).
 
 ---
 
@@ -87,16 +102,3 @@ To set up this project locally:
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/MuhammadUmerKhan/NLP-Powered-Recommendation-System.git
-
-2. Install the required packages:
-    ```bash
-    pip install -r requirements.txt
-    ```
-3. Run the recommendation system:
-    ```bash
-    streamlit run recommendation_system.py
-
-
-## 🛠️ Prerequisites
-- Python 3.x
-- Required packages are listed in requirements.txt.
