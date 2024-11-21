@@ -15,7 +15,7 @@ Welcome to the **[Recommendation System](https://nlp-powered-recommendation-syst
 
 ---
 ## 📄 Acknowledgments
-This project uses datasets from [MovieLens](https://grouplens.org/datasets/movielens/) and [MIT OpenCourseWare](https://ocw.mit.edu/collections/environment/).
+   - **This project uses datasets from [MovieLens](https://grouplens.org/datasets/movielens/) and [MIT OpenCourseWare](https://ocw.mit.edu/collections/environment/).**
 ---
 ## 🔍 Overview
 This project is a recommendation system that employs **Content-Based Filtering**, **Collaborative Filtering**, and a **Hybrid Approach** to recommend courses or movies based on metadata and user interaction data. 🎓
