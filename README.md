@@ -91,7 +91,7 @@ This project is a recommendation system that employs **Content-Based Filtering**
 2. **📈 Improved Metrics**:
    - Introduce precision@k and recall@k for better evaluation.
 
-3. **📱 Streamlit UI Enhancements**:
+3. **📱 [Streamlit UI](https://nlp-powered-recommendation-system.streamlit.app/) Enhancements**:
    - Include advanced filtering options for recommendations.
    - Add visualizations (e.g., bar charts for preferences, popularity trends).
 
