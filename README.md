@@ -1,6 +1,6 @@
 # 🌟 Recommendation System 🌟
 
-Welcome to the **Recommendation System** project! This tool leverages **Content-Based**, **Collaborative Filtering**, and **Hybrid** approaches to provide personalized course recommendations tailored to user preferences. 🚀
+Welcome to the **[Recommendation System](https://nlp-powered-recommendation-system.streamlit.app/)** project! This tool leverages **Content-Based**, **Collaborative Filtering**, and **Hybrid** approaches to provide personalized course recommendations tailored to user preferences. 🚀
 
 ---
 
@@ -61,7 +61,7 @@ This project is a recommendation system that employs **Content-Based Filtering**
 
 ### 🎥 **Collaborative Recommendation System**
 1. **Data Collection and Preprocessing**:
-   - Used the [MovieLens 100K Dataset](https://grouplens.org/datasets/movielens/) to build a collaborative filtering system.
+   - Used the [MovieLens 100K Dataset](https://grouplens.org/datasets/movielens/100k/) to build a collaborative filtering system.
 
 2. **Model Implementation**:
    - Employed **SVD (Singular Value Decomposition)** for matrix factorization and user-item rating prediction.
@@ -70,12 +70,14 @@ This project is a recommendation system that employs **Content-Based Filtering**
 ---
 
 ### 🌐 **Hybrid Recommendation System**
-1. **Work Completed**:
+1. **Data Collection and Preprocessing**:
+   - Used the [MovieLens 1M Dataset](https://grouplens.org/datasets/movielens/1m/) to build a Hybrid filtering system.
+2. **Work Completed**:
    - Normalized predictions from both content-based and collaborative filtering models.
    - Combined the two predictions using weighted averaging (50% content-based, 50% collaborative).
    - Built a function to recommend movies/courses based on this hybrid model.
 
-2. **Work Remaining**:
+3. **Work Remaining**:
    - Fine-tune the weights for content-based and collaborative filtering.
    - Implement user feedback to adapt recommendations dynamically.
    - Integrate the hybrid system into the Streamlit app as a new interactive tab.
@@ -102,3 +104,16 @@ To set up this project locally:
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/MuhammadUmerKhan/NLP-Powered-Recommendation-System.git
+
+2. Install the required packages:
+    ```bash
+    pip install -r requirements.txt
+    ```
+3. Run the recommendation system:
+    ```bash
+    streamlit run recommendation_system.py
+
+
+## 🛠️ Prerequisites
+- Python 3.x
+- Required packages are listed in requirements.txt.
