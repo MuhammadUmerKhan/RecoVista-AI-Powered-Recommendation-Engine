@@ -543,7 +543,7 @@ with tab4:
         if st.button("✨ Get Hybrid Recommendations"):
             if user_id_input != "Please Select":
                 recommendations = hybrid_recommendation(user_id_input, preds, cosine_matrix, ratings, movies, alpha=0.5, beta=0.5)
-                recommendations = recommendations['Title'][:n_recommendations+1]
+                recommendations = recommendations['Title'][:n_recommendations]
                 st.markdown("<div class='recommendation-title'>🎬 Recommended Movies:</div>", unsafe_allow_html=True)
                 for i in range(0, len(recommendations), 4):
                     for cols, movie in zip(st.columns(4), recommendations[i:i + 4]):
