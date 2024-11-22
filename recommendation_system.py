@@ -485,76 +485,81 @@ with tab4:
             else:
                 st.warning("⚠️ Please select a user ID to proceed.")
     with tab3:
-        def hybrid_recommendation(user_id, preds, cosine_matrix, ratings, movies, alpha=0.5, beta=0.5, top_n = 20):
-            scaler = MinMaxScaler()
-
-            # Normalize the prediction matrices
-            collaborative_normalized = scaler.fit_transform(preds)
-            content_normalized = scaler.fit_transform(cosine_matrix)
-
-            # Convert the NumPy arrays back to DataFrames with proper column names
-            collaborative_normalized = pd.DataFrame(collaborative_normalized, columns=preds.columns)
-            content_normalized = pd.DataFrame(content_normalized, columns=movies['MovieID'])
-
-            # Find common movies between both matrices
-            common_movie_names = np.intersect1d(collaborative_normalized.columns, content_normalized.columns)
-
-            # Subset both matrices to only common movies
-            collaborative_normalized = collaborative_normalized[common_movie_names]
-            content_normalized = content_normalized[common_movie_names]
-
-            # Compute hybrid predictions (weighted sum of collaborative and content-based predictions)
-            hybrid_predictions = (alpha * collaborative_normalized) + (beta * content_normalized)
-
-            # Get predictions for the specific user (user_id indexing starts at 1, so subtract 1 for proper indexing)
-            user_prediction = hybrid_predictions.loc[user_id - 1]  # UserID indexing starts at 1
-
-            # Sort predictions by score in descending order
-            sorted_user_predictions = user_prediction.sort_values(ascending=False).reset_index()
-
-            # Rename columns for clarity
-            sorted_user_predictions.columns = ['MovieID', 'Prediction']
-
-            # Get the list of movies already rated by the user
-            rated_movie_ids = ratings[ratings['UserID'] == user_id]['MovieID'].tolist()
-
-            # Filter out movies that the user has already rated
-            recommended_movies = sorted_user_predictions[~sorted_user_predictions['MovieID'].isin(rated_movie_ids)]
-
-            # Get the top 20 recommended movies
-            top_recommendations = recommended_movies.head(top_n)
-
-            # Get detailed movie information for the recommended movies
-            top_recommendation_details = movies[movies['MovieID'].isin(top_recommendations['MovieID'])]
-
-            return top_recommendation_details
-        
-        st.markdown('<div class="system-content">🔀 Hybrid Model</div>', unsafe_allow_html=True)
         st.markdown("""
-            <div class="content">
-                This system recommends movies by combining collaborative filtering and content-based filtering. 
-                By normalizing both SVD and content similarity matrices and blending them with adjustable weights, 
-                this hybrid model offers more accurate and diverse recommendations. 💡
-            </div>
-        """, unsafe_allow_html=True)
-        user_ids = sorted(ratings['UserID'].unique())
-        user_id_input = st.selectbox("👤 Select Recommender ID", ["Please Select"] + [int(u) for u in user_ids])
-        n_recommendations = st.slider("🔢 Number of Hybrid Based Recommendations", 1, 10, 5)
-        if st.button("✨ Get Hybrid Recommendations"):
-            if user_id_input != "Please Select":
-                recommendations = hybrid_recommendation(user_id_input, preds, cosine_matrix, ratings, movies, alpha=0.5, beta=0.5)
-                recommendations = recommendations['Title'][:n_recommendations]
-                st.markdown("<div class='recommendation-title'>🎬 Recommended Movies:</div>", unsafe_allow_html=True)
-                for i in range(0, len(recommendations), 4):
-                    for cols, movie in zip(st.columns(4), recommendations[i:i + 4]):
-                        imdb_url, image_url = get_imdb_url(movie)
-                        with cols:
-                            st.image(image_url, use_column_width=True)
-                            st.markdown(f"[🎬 {movie}]({imdb_url})", unsafe_allow_html=True)
+        <div class="content">
+            It is not available, because app was crashed after releasing this model.
+        </div>
+    """, unsafe_allow_html=True)
+#         def hybrid_recommendation(user_id, preds, cosine_matrix, ratings, movies, alpha=0.5, beta=0.5, top_n = 20):
+#             scaler = MinMaxScaler()
+
+#             # Normalize the prediction matrices
+#             collaborative_normalized = scaler.fit_transform(preds)
+#             content_normalized = scaler.fit_transform(cosine_matrix)
+
+#             # Convert the NumPy arrays back to DataFrames with proper column names
+#             collaborative_normalized = pd.DataFrame(collaborative_normalized, columns=preds.columns)
+#             content_normalized = pd.DataFrame(content_normalized, columns=movies['MovieID'])
+
+#             # Find common movies between both matrices
+#             common_movie_names = np.intersect1d(collaborative_normalized.columns, content_normalized.columns)
+
+#             # Subset both matrices to only common movies
+#             collaborative_normalized = collaborative_normalized[common_movie_names]
+#             content_normalized = content_normalized[common_movie_names]
+
+#             # Compute hybrid predictions (weighted sum of collaborative and content-based predictions)
+#             hybrid_predictions = (alpha * collaborative_normalized) + (beta * content_normalized)
+
+#             # Get predictions for the specific user (user_id indexing starts at 1, so subtract 1 for proper indexing)
+#             user_prediction = hybrid_predictions.loc[user_id - 1]  # UserID indexing starts at 1
+
+#             # Sort predictions by score in descending order
+#             sorted_user_predictions = user_prediction.sort_values(ascending=False).reset_index()
+
+#             # Rename columns for clarity
+#             sorted_user_predictions.columns = ['MovieID', 'Prediction']
+
+#             # Get the list of movies already rated by the user
+#             rated_movie_ids = ratings[ratings['UserID'] == user_id]['MovieID'].tolist()
+
+#             # Filter out movies that the user has already rated
+#             recommended_movies = sorted_user_predictions[~sorted_user_predictions['MovieID'].isin(rated_movie_ids)]
+
+#             # Get the top 20 recommended movies
+#             top_recommendations = recommended_movies.head(top_n)
+
+#             # Get detailed movie information for the recommended movies
+#             top_recommendation_details = movies[movies['MovieID'].isin(top_recommendations['MovieID'])]
+
+#             return top_recommendation_details
+        
+#         st.markdown('<div class="system-content">🔀 Hybrid Model</div>', unsafe_allow_html=True)
+#         st.markdown("""
+#             <div class="content">
+#                 This system recommends movies by combining collaborative filtering and content-based filtering. 
+#                 By normalizing both SVD and content similarity matrices and blending them with adjustable weights, 
+#                 this hybrid model offers more accurate and diverse recommendations. 💡
+#             </div>
+#         """, unsafe_allow_html=True)
+#         user_ids = sorted(ratings['UserID'].unique())
+#         user_id_input = st.selectbox("👤 Select Recommender ID", ["Please Select"] + [int(u) for u in user_ids])
+#         n_recommendations = st.slider("🔢 Number of Hybrid Based Recommendations", 1, 10, 5)
+#         if st.button("✨ Get Hybrid Recommendations"):
+#             if user_id_input != "Please Select":
+#                 recommendations = hybrid_recommendation(user_id_input, preds, cosine_matrix, ratings, movies, alpha=0.5, beta=0.5)
+#                 recommendations = recommendations['Title'][:n_recommendations]
+#                 st.markdown("<div class='recommendation-title'>🎬 Recommended Movies:</div>", unsafe_allow_html=True)
+#                 for i in range(0, len(recommendations), 4):
+#                     for cols, movie in zip(st.columns(4), recommendations[i:i + 4]):
+#                         imdb_url, image_url = get_imdb_url(movie)
+#                         with cols:
+#                             st.image(image_url, use_column_width=True)
+#                             st.markdown(f"[🎬 {movie}]({imdb_url})", unsafe_allow_html=True)
 
         
-# Footer
-st.markdown("""
-    <div class="footer">
-        Developed by <a href="https://portfolio-sigma-mocha-67.vercel.app/" target="_blank" style="color: #2980B9;">Muhammad Umer Khan</a>. Powered by Machine Learning. 🧠
-    </div>""", unsafe_allow_html=True)
+# # Footer
+# st.markdown("""
+#     <div class="footer">
+#         Developed by <a href="https://portfolio-sigma-mocha-67.vercel.app/" target="_blank" style="color: #2980B9;">Muhammad Umer Khan</a>. Powered by Machine Learning. 🧠
+#     </div>""", unsafe_allow_html=True)
