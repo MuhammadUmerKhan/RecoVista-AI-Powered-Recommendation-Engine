@@ -120,7 +120,6 @@ rfc3986-validator==0.1.1
 rich==13.9.3
 rpds-py==0.20.1
 scikit-learn==1.5.2
-scikit-surprise==1.1.4
 scipy==1.14.1
 seaborn==0.13.2
 Send2Trash==1.8.3
@@ -142,7 +141,6 @@ streamlit==1.39.0
 surprise==0.1
 tenacity==9.0.0
 terminado==0.18.1
-thinc==9.1.1
 threadpoolctl==3.5.0
 tinycss2==1.4.0
 toml==0.10.2
