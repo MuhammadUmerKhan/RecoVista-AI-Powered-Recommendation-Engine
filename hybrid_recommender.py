@@ -96,20 +96,6 @@ st.markdown("""
 st.markdown('<div class="main-title">🔄  Hybrid Recommendation System 🔄 </div>', unsafe_allow_html=True)
 st.markdown('<div class="intro-subtitle">Your one-stop solution for finding the best recommendation for you! 💡</div>', unsafe_allow_html=True)
 
-# Intro Section
-st.markdown("""
-    <div class="content">
-        <span class="highlight">📝 Data Collection:</span> Used the 
-        <a href="https://grouplens.org/datasets/movielens/1M/" target="_blank" style="color: #2980B9;">MovieLens 1 Million Dataset</a>, 
-        which includes user ratings for movies. This dataset enabled the creation of a recommendation system that identifies item-item similarities 
-        based on user preferences 🎥.
-        <span class="highlight"><br><br>🔗 Additionally,</span>
-        movie metadata such as the cover images and IMDb URLs are collected using the 
-        <a href="https://pypi.org/project/IMDbPY/" target="_blank" style="color: #2980B9;">IMDbPY library</a>, which allows access to movie information, including movie posters and links to the IMDb pages. 
-        If the movie image is not available, a default placeholder image is displayed. 🖼️
-    </div>
-""", unsafe_allow_html=True)
-
 # Load Data
 ratings = pd.read_csv('./Data/ml-1m/ratings.csv', sep='\t', usecols=['UserID', 'MovieID', 'Ratings'])
 movies = pd.read_csv('./Data/ml-1m/movies.csv', sep='\t', usecols=['MovieID', 'Title', 'Genres'])
@@ -129,10 +115,63 @@ def get_imdb_url(movie_title):
         return None, "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
 
 # Tab Sections
-tab1, tab2, tab3 = st.tabs(["📋 Content-Based Model", "🤝 Collaborative Model", "🔀 Hybrid Model"])
+st.text("")
+st.text("")
+tab1, tab2, tab3, tab4 = st.tabs(["🏠Home", "📋 Content-Based Model", "🤝 Collaborative Model", "🔀 Hybrid Model"])
 
-# Content-Based Model
 with tab1:
+    st.markdown('<div class="system-content">👋 About Me</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="content">
+        Hi! I’m <span class="highlight">Muhammad Umer Khan</span>, an aspiring Data Scientist passionate about 
+        <span class="highlight">🎥 Recommendation Systems</span>, 🤖 <span class="highlight">Machine Learning</span>, and <span class="highlight">NLP</span>. 
+        With hands-on experience in building intelligent systems, I aim to combine my technical expertise with creativity 
+        to solve real-world problems. Currently, I am pursuing my Bachelor’s in Computer Science and actively exploring innovative projects. 🚀
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="section-title">🎯 Project Overview</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="content">
+        Welcome to my Hybrid Recommendation System! This project is a result of my efforts to create a robust, 
+        user-friendly platform for personalized movie recommendations. Here's what it includes:
+        <ul>
+            <li><span class="highlight">📋 Content-Based Filtering</span>: Uses movie metadata like genres to find similar movies based on user preferences.</li>
+            <li><span class="highlight">🤝 Collaborative Filtering</span>: Leverages user interactions (ratings) to recommend movies based on patterns and similarities among users.</li>
+            <li><span class="highlight">🔄 Hybrid Model</span>: Combines the strengths of content-based and collaborative filtering for enhanced and diverse recommendations.</li>
+            <li><span class="highlight">🌐 Deployment</span>: Built with Streamlit for a seamless and interactive user experience.</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="section-title">💻 Technologies & Tools</div>', unsafe_allow_html=True)
+    st.markdown("""
+        <div class="content">
+            <ul>
+                <li><span class="highlight">🔤 Languages & Libraries</span>: Python, Pandas, Scikit-Learn, Spacy, TF-IDF, SVD, Scipy.</li>
+                <li><span class="highlight">⚙️ Approaches</span>: Content-Based Filtering, Collaborative Filtering, and Hybrid Methods</li>
+                <li><span class="highlight">🌐 Deployment</span>: Streamlit for web-based interactive systems</li>
+            </ul>
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="section-title">📊 Dataset Overview</div>', unsafe_allow_html=True)
+    # Intro Section
+    st.text("")
+    st.markdown("""
+        <div class="content">
+            <span class="highlight">📝 Data Collection:</span> Used the 
+            <a href="https://grouplens.org/datasets/movielens/1M/" target="_blank" style="color: #2980B9;">MovieLens 1 Million Dataset</a>, 
+            which includes user ratings for movies. This dataset enabled the creation of a recommendation system that identifies item-item similarities 
+            based on user preferences 🎥.
+            <span class="highlight"><br><br>🔗 Additionally,</span>
+            movie metadata such as the cover images and IMDb URLs are collected using the 
+            <a href="https://pypi.org/project/IMDbPY/" target="_blank" style="color: #2980B9;">IMDbPY library</a>, which allows access to movie information, including movie posters and links to the IMDb pages. 
+            If the movie image is not available, a default placeholder image is displayed. 🖼️
+        </div>
+    """, unsafe_allow_html=True)
+# Content-Based Model
+with tab2:
     st.markdown('<div class="system-content">📋 Content-Based Model</div>', unsafe_allow_html=True)
     st.markdown("""
         <div class="content">
@@ -179,7 +218,7 @@ with tab1:
         else:
             st.warning("⚠️ Please select a movie to proceed.")
 
-with tab2:
+with tab3:
     st.markdown('<div class="system-content">🤝 Collaborative Model</div>', unsafe_allow_html=True)
     st.markdown("""
             <div class="content">
@@ -250,7 +289,7 @@ with tab2:
         else:
             st.warning("⚠️ Please select a user ID to proceed.")
             
-with tab3:
+with tab4:
     st.markdown('<div class="system-content">🔀 Hybrid Model</div>', unsafe_allow_html=True)
     st.markdown("""
         <div class="content">
@@ -322,7 +361,8 @@ with tab3:
                     with cols:
                         st.image(image_url, use_column_width=True)
                         st.markdown(f"[🎬 {movie}]({imdb_url})", unsafe_allow_html=True)
-
+        else:
+            st.warning("⚠️ Please select a user ID to proceed.")
 # Footer
 st.markdown("""
     <div class="footer">
