@@ -335,7 +335,7 @@ with tab4:
         <div class="content"><center>
             Because of complexity of app hybrid system is shifted to the  
             <span class="highlight">
-            <a href="https://grouplens.org/datasets/movielens/100k/" target="_blank" style="color: #2980B9;">App</a></span>
+            <a href="https://nlp-powered-recommendation-system-second-part.streamlit.app/" target="_blank" style="color: #2980B9;">App</a></span>
             <center>
         </div>
     """, unsafe_allow_html=True)
