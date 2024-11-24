@@ -183,7 +183,7 @@ with tab2:
     # Prepare Genres for Vectorization
     movies['Genres'] = movies['Genres'].fillna('').str.split('|')
     movies['Genres_str'] = movies['Genres'].apply(" ".join)
-
+    movies['Genres'] = movies['Genres'].apply(lambda x: ", ".join(x))
     # Calculate Cosine Similarity
     tfidf = TfidfVectorizer()
     tfidf_matrix = tfidf.fit_transform(movies['Genres_str'])
@@ -274,8 +274,8 @@ with tab3:
     user_ids = sorted(ratings['UserID'].unique())
     user_id_input = st.selectbox("👤 Select User ID", ["Please Select"] + [int(u) for u in user_ids])
     n_recommendations = st.slider("🔢 Number of User Based Recommendations", 1, 10, 5)
-    
-    if st.button("✨ Get Collaborative Recommendations"):
+
+    if st.button("Get Collaborative Recommendations ✨"):
         if user_id_input != "Please Select":
             already_rated, recommendations = recommend_collaborative(preds, user_id_input, movies, ratings, n_recommendations)
             recommendations = recommendations['Title']
@@ -289,6 +289,19 @@ with tab3:
         else:
             st.warning("⚠️ Please select a user ID to proceed.")
             
+            
+    if st.button("See User Details  👀"):
+        if user_id_input != "Please Select":
+            st.markdown("""
+                <div class="content">
+                    Selected User Rated Movies Details 🎬:
+                </div>
+            """, unsafe_allow_html=True)
+            user = ratings[ratings['UserID'] == user_id_input]
+            user_details = pd.merge(movies, user, on='MovieID')[['UserID', 'MovieID', 'Title', 'Ratings']]
+            st.table(user_details)
+        else:
+            st.warning("⚠️ Please select a user ID to proceed.")
 with tab4:
     st.markdown('<div class="system-content">🔀 Hybrid Model</div>', unsafe_allow_html=True)
     st.markdown("""
@@ -350,6 +363,7 @@ with tab4:
     user_ids = sorted(ratings['UserID'].unique())
     user_id_input = st.selectbox("👤 Select Recommender ID", ["Please Select"] + [int(u) for u in user_ids])
     n_recommendations = st.slider("🔢 Number of Hybrid Based Recommendations", 1, 10, 5)
+    
     if st.button("✨ Get Hybrid Recommendations"):
         if user_id_input != "Please Select":
             recommendations = hybrid_recommendation(user_id_input, preds, cosine_sim_matrix, ratings, movies, alpha=0.5, beta=0.5)
@@ -363,6 +377,20 @@ with tab4:
                         st.markdown(f"[🎬 {movie}]({imdb_url})", unsafe_allow_html=True)
         else:
             st.warning("⚠️ Please select a user ID to proceed.")
+            
+    if st.button("See User Detail  👀"):
+        if user_id_input != "Please Select":
+            st.markdown("""
+                <div class="content">
+                    Selected User Rated Movies Details 🎬:
+                </div>
+            """, unsafe_allow_html=True)
+            
+            user_details = pd.merge(movies, ratings[ratings['UserID'] == user_id_input], on='MovieID')[['UserID', 'MovieID', 'Title', 'Ratings']]
+            st.table(user_details)
+        else:
+            st.warning("⚠️ Please select a user ID to proceed.")
+    
 # Footer
 st.markdown("""
     <div class="footer">
