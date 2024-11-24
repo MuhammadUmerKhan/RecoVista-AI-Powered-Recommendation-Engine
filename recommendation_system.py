@@ -6,7 +6,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from imdb import IMDb
 import spacy
 import joblib as jb
-import numpy as np
 from scipy.sparse.linalg import svds
 from sklearn.metrics import mean_squared_error
 import numpy as np
