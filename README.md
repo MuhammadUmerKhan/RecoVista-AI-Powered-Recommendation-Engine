@@ -71,7 +71,6 @@ This project is a comprehensive recommendation system that employs **Content-Bas
    - Employed matrix factorization to predict user-item ratings.  
    - Used **cosine similarity** with the **NearestNeighbors algorithm** to identify similar users or items.  
    - Recommended movies to users by identifying top-rated items among closely matched similar users.  
-   - Evaluated performance using **RMSE** and 5-fold cross-validation.  
 
 3. **Enhancements**:  
    - Integrated **IMDbPY** to fetch movie metadata such as cover images and IMDb URLs.  
