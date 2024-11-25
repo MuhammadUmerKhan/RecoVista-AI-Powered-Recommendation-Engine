@@ -135,5 +135,5 @@ To set up this project locally:
 
 ## 📄 Acknowledgments
 - **Datasets:**
-   - (MovieLens)[https://grouplens.org/datasets/movielens/] for collaborative and hybrid systems.
-   - (MIT OpenCourseWare)[https://ocw.mit.edu/collections/environment/] for content-based recommendations.
+   - [MovieLens](https://grouplens.org/datasets/movielens/) for collaborative and hybrid systems.
+   - [MIT OpenCourseWare](https://ocw.mit.edu/collections/environment/) for content-based recommendations.
