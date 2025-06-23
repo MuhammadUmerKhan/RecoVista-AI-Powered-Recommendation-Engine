@@ -1,4 +1,4 @@
-# 🌟 Recommendation System 🌟  
+# 🌟 RecoVista: AI-Powered Recommendation Engine 🌟  
 
 Welcome to the **[Recommendation System](https://nlp-powered-recommendation-system.streamlit.app/)** project! This tool leverages **Content-Based**, **Collaborative Filtering**, and **Hybrid** approaches to provide personalized course and movie recommendations tailored to user preferences. 🚀  
 
