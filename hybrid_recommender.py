@@ -11,90 +11,206 @@ import streamlit as st
 st.set_page_config(
     page_title="Recommendation System",
     page_icon="🤖",
-    layout="centered",
+    layout="wide",
 )
 
-# Custom CSS for Styling
+# Custom CSS for styling
 st.markdown("""
     <style>
-        /* Main Title */
+        /* Advanced Dark Theme Styles (No Black) */
+        .stApp {
+            background: linear-gradient(rgba(30, 27, 75, 0.9), rgba(30, 27, 75, 0.9)), url('https://aisingapore.org/wp-content/uploads/2022/03/100E-2018-002.png');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #a5b4fc;
+            font-family: 'Poppins', sans-serif;
+        }
+        .main-container {
+            background: linear-gradient(135deg, rgba(55, 48, 163, 0.85), rgba(76, 29, 149, 0.85));
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            border: 2px solid #60a5fa;
+            backdrop-filter: blur(10px);
+        }
         .main-title {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #2C3E50;
+            font-size: 3.2em;
+            font-weight: 700;
+            color: #f9a8d4;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 35px;
+            text-shadow: 0 0 12px rgba(249, 168, 212, 0.8);
+            animation: pulseGlow 2s ease-in-out infinite;
         }
-        /* Section Titles */
         .section-title {
-            font-size: 1.8em;
-            color: #3498DB;
-            font-weight: bold;
-            margin-top: 30px;
-            text-align: left;
+            font-size: 2.2em;
+            font-weight: 600;
+            color: #f9a8d4;
+            margin: 40px 0 20px;
+            text-shadow: 0 0 10px rgba(249, 168, 212, 0.8);
+            border-left: 6px solid #f9a8d4;
+            padding-left: 18px;
+            animation: slideInLeft 0.6s ease-in-out;
         }
-        /* System Content */
         .system-content {
-            font-size: 1.8em;
-            color: #3498DB;
-            font-weight: bold;
-            margin-top: 30px;
+            font-size: 2.2em;
+            font-weight: 600;
+            color: #f9a8d4;
             text-align: center;
-        }
-        /* Section Content */
-        .section-content {
-            text-align: center;
-        }
-        /* Home Page Content */
-        .intro-title {
-            font-size: 2.5em;
-            color: #2C3E50;
-            font-weight: bold;
-            text-align: center;
-        }
-        .intro-subtitle {
-            font-size: 1.2em;
-            color: #34495E;
-            text-align: center;
+            text-shadow: 0 0 10px rgba(249, 168, 212, 0.8);
+            animation: slideInLeft 0.6s ease-in-out;
         }
         .content {
-            font-size: 1em;
-            color: #7F8C8D;
+            font-size: 1.15em;
+            color: #a5b4fc;
+            line-height: 1.9;
             text-align: justify;
-            line-height: 1.6;
         }
         .highlight {
-            color: #2E86C1;
+            color: #fef08a;
             font-weight: bold;
         }
-        /* Recommendation Titles and Descriptions */
-        .recommendation-title {
-            font-size: 22px;
-            color: #2980B9;
-        }
-        .recommendation-desc {
-            font-size: 16px;
-            color: #7F8C8D;
-        }
-        /* Separator Line */
         .separator {
-            margin-top: 10px;
-            margin-bottom: 10px;
-            border-top: 1px solid #BDC3C7;
+            height: 2px;
+            background-color: #60a5fa;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
-        /* Footer */
-        .footer {
-            font-size: 14px;
-            color: #95A5A6;
+        .stButton>button {
+            background: linear-gradient(45deg, #ec4899, #7c3aed);
+            color: #fef08a;
+            border-radius: 12px;
+            padding: 14px 30px;
+            font-weight: 600;
+            font-size: 1.1em;
+            border: none;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.8);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .stButton>button:hover {
+            background: linear-gradient(45deg, #db2777, #6d28d9);
+            box-shadow: 0 0 25px rgba(236, 72, 153, 1);
+            transform: scale(1.1);
+            color: #e0e7ff;
+        }
+        .stButton>button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(96, 165, 250, 0.2);
+            transition: all 0.6s ease;
+            transform: translate(-50%, -50%) scale(0);
+            border-radius: 50%;
+        }
+        .stButton>button:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .stSelectbox, .stSlider {
+            background: linear-gradient(135deg, rgba(55, 48, 163, 0.9), rgba(76, 29, 149, 0.9));
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid #60a5fa;
+            color: #a5b4fc;
+            transition: all 0.3s ease;
+        }
+        .stSelectbox:hover, .stSlider:hover {
+            border-color: #93c5fd;
+            box-shadow: 0 0 8px rgba(147, 197, 253, 0.5);
+        }
+        .stSelectbox label, .stSlider label {
+            color: #fef08a;
+            font-weight: 500;
+        }
+        .stTabs [data-baseweb="tab"] {
+            font-size: 1.3em;
+            font-weight: 500;
+            color: #a5b4fc;
+            padding: 15px 30px;
+            border-radius: 12px 12px 0 0;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(55, 48, 163, 0.9), rgba(76, 29, 149, 0.9));
+        }
+        .stTabs [data-baseweb="tab"][aria-selected="true"] {
+            background: linear-gradient(45deg, #ec4899, #7c3aed);
+            color: #fef08a;
+            font-weight: 600;
+        }
+        .stTabs [data-baseweb="tab"]:hover {
+            background: linear-gradient(135deg, #4c1d95, #5b21b6);
+            color: #e0e7ff;
+        }
+        .stImage {
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: scaleIn 0.8s ease-in-out;
+        }
+        .recommendation-title {
+            font-size: 1.8em;
+            color: #f9a8d4;
+            font-weight: bold;
             margin-top: 20px;
             text-align: center;
+        }
+        .footer {
+            font-size: 0.95em;
+            color: #a5b4fc;
+            margin-top: 50px;
+            text-align: center;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(55, 48, 163, 0.85), rgba(76, 29, 149, 0.85));
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 2px solid #60a5fa;
+            backdrop-filter: blur(10px);
+        }
+        .footer a {
+            color: #93c5fd;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .footer a:hover {
+            color: #f9a8d4;
+            text-decoration: underline;
+        }
+        .content ul li::marker {
+            color: #60a5fa;
+        }
+        .stDataFrame {
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: rgba(42, 46, 63, 0.95);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .stDataFrame table {
+            color: #a5b4fc;
+        }
+        /* Animations */
+        @keyframes pulseGlow {
+            0% { text-shadow: 0 0 10px rgba(249, 168, 212, 0.8); }
+            50% { text-shadow: 0 0 20px rgba(249, 168, 212, 1); }
+            100% { text-shadow: 0 0 10px rgba(249, 168, 212, 0.8); }
+        }
+        @keyframes slideInLeft {
+            from { transform: translateX(-30px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
     </style>
 """, unsafe_allow_html=True)
 
 # Header Section
 st.markdown('<div class="main-title">🔄  Hybrid Recommendation System 🔄 </div>', unsafe_allow_html=True)
-st.markdown('<div class="intro-subtitle">Your one-stop solution for finding the best recommendation for you! 💡</div>', unsafe_allow_html=True)
+st.markdown('<div style="font-size: 1.5em; color: #f9a8d4; text-align: center; text-shadow: 0 0 8px rgba(249, 168, 212, 0.8);">Your one-stop solution for finding the best recommendation for you! 💡</div>', unsafe_allow_html=True)
 
 # Load Data
 ratings = pd.read_csv('./Data/ml-1m/ratings.csv', sep='\t', usecols=['UserID', 'MovieID', 'Ratings'])
@@ -120,6 +236,7 @@ st.text("")
 tab1, tab2, tab3, tab4 = st.tabs(["🏠Home", "📋 Content-Based Model", "🤝 Collaborative Model", "🔀 Hybrid Model"])
 
 with tab1:
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
     st.markdown('<div class="system-content">👋 About Me</div>', unsafe_allow_html=True)
     st.markdown("""
     <div class="content">
@@ -148,67 +265,50 @@ with tab1:
     st.markdown("""
         <div class="content">
             <ul>
-                <li><span class="highlight">🔤 Languages & Libraries</span>: Python, Pandas, Scikit-Learn, Spacy, TF-IDF, SVD, Scipy.</li>
-                <li><span class="highlight">⚙️ Approaches</span>: Content-Based Filtering, Collaborative Filtering, and Hybrid Methods</li>
-                <li><span class="highlight">🌐 Deployment</span>: Streamlit for web-based interactive systems</li>
+                <li><span class="highlight">🔤 Languages & Libraries</span>: Python, Pandas, Scikit-Learn, SciPy, TF-IDF, IMDbPY.</li>
+                <li><span class="highlight">⚙️ Approaches</span>: Content-Based Filtering, Collaborative Filtering (SVD), Hybrid Methods.</li>
+                <li><span class="highlight">🌐 Deployment</span>: Streamlit for web-based interactive systems.</li>
             </ul>
         </div>
     """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown('<div class="section-title">📊 Dataset Overview</div>', unsafe_allow_html=True)
-    # Intro Section
-    st.text("")
+with tab2:
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
+    st.markdown('<div class="system-content">📋 Content-Based Model</div>', unsafe_allow_html=True)
+    st.text(" ")
     st.markdown("""
         <div class="content">
             <span class="highlight">📝 Data Collection:</span> Used the 
-            <a href="https://grouplens.org/datasets/movielens/1M/" target="_blank" style="color: #2980B9;">MovieLens 1 Million Dataset</a>, 
-            which includes user ratings for movies. This dataset enabled the creation of a recommendation system that identifies item-item similarities 
-            based on user preferences 🎥.
-            <span class="highlight"><br><br>🔗 Additionally,</span>
-            movie metadata such as the cover images and IMDb URLs are collected using the 
-            <a href="https://pypi.org/project/IMDbPY/" target="_blank" style="color: #2980B9;">IMDbPY library</a>, which allows access to movie information, including movie posters and links to the IMDb pages. 
-            If the movie image is not available, a default placeholder image is displayed. 🖼️
-        </div>
-    """, unsafe_allow_html=True)
-# Content-Based Model
-with tab2:
-    st.markdown('<div class="system-content">📋 Content-Based Model</div>', unsafe_allow_html=True)
-    st.markdown("""
-        <div class="content">
-            This system recommends movies based on user preferences for similar genres, 
-            helping users discover movies they may enjoy based on their past choices 🎬.
+            <a href="https://grouplens.org/datasets/movielens/1m/" target="_blank" style="color: #93c5fd;">MovieLens 1M Dataset</a>, 
+            which includes movie metadata such as genres. This dataset enabled the creation of a content-based recommendation system that identifies movie similarities 
+            based on genres 🎥.
+            <span class="highlight"><br>🔗 Additionally,</span>
+             movie metadata such as the cover images and IMDb URLs are collected using the 
+            <a href="https://pypi.org/project/IMDbPY/" target="_blank" style="color: #93c5fd;">IMDbPY library</a>, which allows access to movie information, including movie posters and links to the IMDb pages. 
+            If the movie image is not available, a default placeholder image is displayed.
         </div>
     """, unsafe_allow_html=True)
 
-    # Prepare Genres for Vectorization
-    movies['Genres'] = movies['Genres'].fillna('').str.split('|')
-    movies['Genres_str'] = movies['Genres'].apply(" ".join)
-    movies['Genres'] = movies['Genres'].apply(lambda x: ", ".join(x))
-    # Calculate Cosine Similarity
-    tfidf = TfidfVectorizer()
-    tfidf_matrix = tfidf.fit_transform(movies['Genres_str'])
+    # Preprocess Genres
+    movies['Genres'] = movies['Genres'].str.replace('|', ' ', regex=False)
+    tfidf = TfidfVectorizer(stop_words='english')
+    tfidf_matrix = tfidf.fit_transform(movies['Genres'])
     cosine_sim_matrix = cosine_similarity(tfidf_matrix)
+    st.text(" ")
+    selected_movie = st.selectbox("🎥 Select a Movie", ["Please Select"] + list(movies['Title']))
+    n_recommendations = st.slider("🔢 Number of Recommendations", 1, 10, 5)
 
-    # Recommendation Function
-    movie_indices = pd.Series(movies.index, index=movies['Title']).drop_duplicates()
-
-    def recommend_content(title, n=10):
-        idx = movie_indices[title]
-        sim_scores = list(enumerate(cosine_sim_matrix[idx]))
-        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:n+1]
-        return movies.iloc[[i[0] for i in sim_scores]]['Title']
-
-    # UI for Content-Based Recommendation
-    selected_movie = st.selectbox("🎥 Select a Movie", ["Please Select"] + movies['Title'].tolist())
-    num_recommendations = st.slider("🔢 Number of Recommendations", 1, 10, 5)
-
-
-    if st.button("✨ Get Content-Based Recommendations"):
+    if st.button("🎯 Get Recommendations"):
         if selected_movie != "Please Select":
-            recommendations = recommend_content(selected_movie, n=num_recommendations)
-            
+            # Get index of the selected movie
+            idx = movies[movies['Title'] == selected_movie].index[0]
+            sim_scores = list(enumerate(cosine_sim_matrix[idx]))
+            sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+            sim_scores = sim_scores[1:n_recommendations + 1]  # Exclude itself
+            movie_indices = [i[0] for i in sim_scores]
+            recommendations = movies['Title'].iloc[movie_indices]
             st.markdown("<div class='recommendation-title'>🎬 Recommended Movies:</div>", unsafe_allow_html=True)
-            
             for i in range(0, len(recommendations), 4):
                 for cols, movie in zip(st.columns(4), recommendations[i:i + 4]):
                     imdb_url, image_url = get_imdb_url(movie)
@@ -216,69 +316,52 @@ with tab2:
                         st.image(image_url, use_column_width=True)
                         st.markdown(f"[🎬 {movie}]({imdb_url})", unsafe_allow_html=True)
         else:
-            st.warning("⚠️ Please select a movie to proceed.")
+            st.warning("⚠️ Please select a movie from the dropdown to proceed.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 with tab3:
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
     st.markdown('<div class="system-content">🤝 Collaborative Model</div>', unsafe_allow_html=True)
+    st.text(" ")
     st.markdown("""
-            <div class="content">
-                This system recommends movies based on user interactions (ratings). It uses collaborative filtering 
-                with Singular Value Decomposition (SVD) to predict user preferences. 💬
-            </div>
-        """, unsafe_allow_html=True)
-    
-    st.text("")
-    st.text("")
-    st.text("")
-    
-    def recommend_collaborative(predictions, userID, movies, original_ratings, num_recommendations=10):
-        user_row_number = userID - 1  # Adjust for 0-based indexing
-        
-        # Sort predictions for the user in descending order of rating
-        sorted_user_predictions = predictions.iloc[user_row_number].sort_values(ascending=False)
-        sorted_user_predictions = pd.DataFrame({
-            'MovieID': sorted_user_predictions.index,
-            'Predictions': sorted_user_predictions.values
-        })  # Ensure column names are clear and explicit
-        # Retrieve movies already rated by the user
-        user_data = original_ratings[original_ratings["UserID"] == userID]
-        user_full = (
-            user_data.merge(movies, how="left", on="MovieID")
-            .sort_values(["Ratings"], ascending=False)
-        )
-        
-        # Log information about the user's rated movies
-        # print(f"User {userID} has already rated {user_full.shape[0]} movies.")
-        # print(f"Recommending top {num_recommendations} movies with highest predicted ratings not already rated.")
-        
-        # Identify movies not yet rated by the user and merge with predictions
-        recommendations = (
-            movies[~movies["MovieID"].isin(user_full["MovieID"])]
-            .merge(sorted_user_predictions, how="left", on="MovieID")  # Explicit column names used
-            .sort_values("Predictions", ascending=False)  # Sort based on the predictions
-            .iloc[:num_recommendations, :]  # Select top N recommendations
-        )
-        
-        return user_full, recommendations
-    
-    Ratings = ratings.pivot(index = 'UserID', columns ='MovieID', values = 'Ratings').fillna(0)
-    R = np.matrix(Ratings)
-    user_means = np.mean(R, axis=1)
-    normalized_ratings = R - user_means.reshape(-1, 1)
-    U, sigma, Vt = svds(normalized_ratings, k=50)
+        <div class="content">
+            <span class="highlight">📝 Data Collection:</span> Used the 
+            <a href="https://grouplens.org/datasets/movielens/1m/" target="_blank" style="color: #93c5fd;">MovieLens 1M Dataset</a>, 
+            which includes user ratings for movies. This dataset enabled the creation of a collaborative recommendation system that identifies user-item similarities 
+            based on ratings 🎥.
+            <span class="highlight"><br>🔗 Additionally,</span>
+             movie metadata such as the cover images and IMDb URLs are collected using the 
+            <a href="https://pypi.org/project/IMDbPY/" target="_blank" style="color: #93c5fd;">IMDbPY library</a>.
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Collaborative Filtering
+    R = ratings.pivot(index='UserID', columns='MovieID', values='Ratings').fillna(0)
+    R_np = R.to_numpy()
+    user_ratings_mean = np.mean(R_np, axis=1)
+    R_demeaned = R_np - user_ratings_mean.reshape(-1, 1)
+    U, sigma, Vt = svds(R_demeaned, k=50)
     sigma = np.diag(sigma)
-    
-    all_user_predicted_ratings = np.dot(np.dot(U, sigma), Vt) + user_means.reshape(-1, 1)
-    preds = pd.DataFrame(all_user_predicted_ratings, columns = Ratings.columns)
-
+    all_user_predicted_ratings = np.dot(np.dot(U, sigma), Vt) + user_ratings_mean.reshape(-1, 1)
+    preds = pd.DataFrame(all_user_predicted_ratings, columns=R.columns)
+    st.text(" ")
     user_ids = sorted(ratings['UserID'].unique())
-    user_id_input = st.selectbox("👤 Select User ID", ["Please Select"] + [int(u) for u in user_ids])
-    n_recommendations = st.slider("🔢 Number of User Based Recommendations", 1, 10, 5)
+    user_id_input = st.selectbox("👤 Select Recommender ID", ["Please Select"] + [int(u) for u in user_ids])
+    n_recommendations = st.slider("🔢 Number of Recommendations", 1, 10, 5)
 
-    if st.button("Get Collaborative Recommendations ✨"):
+    def collaborative_recommendation(user_id, preds, ratings, movies, top_n=20):
+        sorted_user_predictions = preds.loc[user_id - 1].sort_values(ascending=False).reset_index()
+        sorted_user_predictions.columns = ['MovieID', 'Prediction']
+        rated_movie_ids = ratings[ratings['UserID'] == user_id]['MovieID'].tolist()
+        recommended_movies = sorted_user_predictions[~sorted_user_predictions['MovieID'].isin(rated_movie_ids)]
+        top_recommendations = recommended_movies.head(top_n)
+        top_recommendation_details = movies[movies['MovieID'].isin(top_recommendations['MovieID'])]
+        return top_recommendation_details
+    
+    if st.button("🎯 Get Recommendations"):
         if user_id_input != "Please Select":
-            already_rated, recommendations = recommend_collaborative(preds, user_id_input, movies, ratings, n_recommendations)
-            recommendations = recommendations['Title']
+            recommendations = collaborative_recommendation(user_id_input, preds, ratings, movies)
+            recommendations = recommendations['Title'][:n_recommendations]
             st.markdown("<div class='recommendation-title'>🎬 Recommended Movies:</div>", unsafe_allow_html=True)
             for i in range(0, len(recommendations), 4):
                 for cols, movie in zip(st.columns(4), recommendations[i:i + 4]):
@@ -302,7 +385,10 @@ with tab3:
             st.table(user_details)
         else:
             st.warning("⚠️ Please select a user ID to proceed.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
 with tab4:
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
     st.markdown('<div class="system-content">🔀 Hybrid Model</div>', unsafe_allow_html=True)
     st.markdown("""
         <div class="content">
@@ -378,6 +464,7 @@ with tab4:
         else:
             st.warning("⚠️ Please select a user ID to proceed.")
             
+            
     if st.button("See User Detail  👀"):
         if user_id_input != "Please Select":
             st.markdown("""
@@ -390,9 +477,10 @@ with tab4:
             st.table(user_details)
         else:
             st.warning("⚠️ Please select a user ID to proceed.")
+    st.markdown('</div>', unsafe_allow_html=True)
     
 # Footer
 st.markdown("""
     <div class="footer">
-        Developed by <a href="https://portfolio-sigma-mocha-67.vercel.app/" target="_blank" style="color: #2980B9;">Muhammad Umer Khan</a>. Powered by Machine Learning. 🧠
+        Developed by <a href="https://portfolio-sigma-mocha-67.vercel.app/" target="_blank">Muhammad Umer Khan</a>. Powered by Machine Learning. 🧠
     </div>""", unsafe_allow_html=True)
