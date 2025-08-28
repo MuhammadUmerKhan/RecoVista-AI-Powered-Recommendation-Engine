@@ -18,102 +18,208 @@ nlp = spacy.load("en_core_web_sm")
 st.set_page_config(
     page_title="Recommendation System",
     page_icon="🤖",
-    layout="centered",
+    layout="wide",
 )
 
 # Custom CSS for styling
 st.markdown("""
     <style>
-        /* Main Title */
+        /* Advanced Dark Theme Styles (No Black) */
+        .stApp {
+            background: linear-gradient(rgba(30, 27, 75, 0.9), rgba(30, 27, 75, 0.9)), url('https://3cloudsolutions.com/wp-content/uploads/2022/11/blog-building-recommendation-system.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #a5b4fc;
+            font-family: 'Poppins', sans-serif;
+        }
+        .main-container {
+            background: linear-gradient(135deg, rgba(55, 48, 163, 0.85), rgba(76, 29, 149, 0.85));
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            border: 2px solid #60a5fa;
+            backdrop-filter: blur(10px);
+        }
         .main-title {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #2C3E50;
+            font-size: 3.2em;
+            font-weight: 700;
+            color: #f9a8d4;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 35px;
+            text-shadow: 0 0 12px rgba(249, 168, 212, 0.8);
+            animation: pulseGlow 2s ease-in-out infinite;
         }
-        /* Section Titles */
         .section-title {
-            font-size: 1.8em;
-            color: #3498DB;
-            font-weight: bold;
-            margin-top: 30px;
-            text-align: left;
+            font-size: 2.2em;
+            font-weight: 600;
+            color: #f9a8d4;
+            margin: 40px 0 20px;
+            text-shadow: 0 0 10px rgba(249, 168, 212, 0.8);
+            border-left: 6px solid #f9a8d4;
+            padding-left: 18px;
+            animation: slideInLeft 0.6s ease-in-out;
         }
-        /* System Content */
         .system-content {
-            font-size: 1.8em;
-            color: #3498DB;
-            font-weight: bold;
-            margin-top: 30px;
+            font-size: 2.2em;
+            font-weight: 600;
+            color: #f9a8d4;
             text-align: center;
-        }
-        /* Section Content */
-        .section-content{
-            text-align: center;
-        }
-        /* Home Page Content */
-        .intro-title {
-            font-size: 2.5em;
-            color: #2C3E50;
-            font-weight: bold;
-            text-align: center;
-        }
-        .intro-subtitle {
-            font-size: 1.2em;
-            color: #34495E;
-            text-align: center;
+            text-shadow: 0 0 10px rgba(249, 168, 212, 0.8);
+            animation: slideInLeft 0.6s ease-in-out;
         }
         .content {
-            font-size: 1em;
-            color: #7F8C8D;
+            font-size: 1.15em;
+            color: #a5b4fc;
+            line-height: 1.9;
             text-align: justify;
-            line-height: 1.6;
         }
         .highlight {
-            color: #2E86C1;
+            color: #fef08a;
             font-weight: bold;
         }
-        /* Recommendation Titles and Descriptions */
-        .recommendation-title {
-            font-size: 22px;
-            color: #2980B9;
-        }
-        .recommendation-desc {
-            font-size: 16px;
-            color: #7F8C8D;
-        }
-        /* Separator Line */
         .separator {
-            margin-top: 10px;
-            margin-bottom: 10px;
-            border-top: 1px solid #BDC3C7;
+            height: 2px;
+            background-color: #60a5fa;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
-        /* Footer */
-        .footer {
-            font-size: 14px;
-            color: #95A5A6;
+        .stButton>button {
+            background: linear-gradient(45deg, #ec4899, #7c3aed);
+            color: #fef08a;
+            border-radius: 12px;
+            padding: 14px 30px;
+            font-weight: 600;
+            font-size: 1.1em;
+            border: none;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.8);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .stButton>button:hover {
+            background: linear-gradient(45deg, #db2777, #6d28d9);
+            box-shadow: 0 0 25px rgba(236, 72, 153, 1);
+            transform: scale(1.1);
+            color: #e0e7ff;
+        }
+        .stButton>button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(96, 165, 250, 0.2);
+            transition: all 0.6s ease;
+            transform: translate(-50%, -50%) scale(0);
+            border-radius: 50%;
+        }
+        .stButton>button:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .stSelectbox, .stSlider {
+            background: linear-gradient(135deg, rgba(55, 48, 163, 0.9), rgba(76, 29, 149, 0.9));
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid #60a5fa;
+            color: #a5b4fc;
+            transition: all 0.3s ease;
+        }
+        .stSelectbox:hover, .stSlider:hover {
+            border-color: #93c5fd;
+            box-shadow: 0 0 8px rgba(147, 197, 253, 0.5);
+        }
+        .stSelectbox label, .stSlider label {
+            color: #fef08a;
+            font-weight: 500;
+        }
+        .stTabs [data-baseweb="tab"] {
+            font-size: 1.3em;
+            font-weight: 500;
+            color: #a5b4fc;
+            padding: 15px 30px;
+            border-radius: 12px 12px 0 0;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(55, 48, 163, 0.9), rgba(76, 29, 149, 0.9));
+        }
+        .stTabs [data-baseweb="tab"][aria-selected="true"] {
+            background: linear-gradient(45deg, #ec4899, #7c3aed);
+            color: #fef08a;
+            font-weight: 600;
+        }
+        .stTabs [data-baseweb="tab"]:hover {
+            background: linear-gradient(135deg, #4c1d95, #5b21b6);
+            color: #e0e7ff;
+        }
+        .stImage {
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: scaleIn 0.8s ease-in-out;
+        }
+        .recommendation-title {
+            font-size: 1.8em;
+            color: #f9a8d4;
+            font-weight: bold;
             margin-top: 20px;
             text-align: center;
+        }
+        .footer {
+            font-size: 0.95em;
+            color: #a5b4fc;
+            margin-top: 50px;
+            text-align: center;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(55, 48, 163, 0.85), rgba(76, 29, 149, 0.85));
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 2px solid #60a5fa;
+            backdrop-filter: blur(10px);
+        }
+        .footer a {
+            color: #93c5fd;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .footer a:hover {
+            color: #f9a8d4;
+            text-decoration: underline;
+        }
+        .content ul li::marker {
+            color: #60a5fa;
+        }
+        /* Animations */
+        @keyframes pulseGlow {
+            0% { text-shadow: 0 0 10px rgba(249, 168, 212, 0.8); }
+            50% { text-shadow: 0 0 20px rgba(249, 168, 212, 1); }
+            100% { text-shadow: 0 0 10px rgba(249, 168, 212, 0.8); }
+        }
+        @keyframes slideInLeft {
+            from { transform: translateX(-30px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
     </style>
 """, unsafe_allow_html=True)
 
 # Title Heading (appears above tabs and remains on all pages)
-st.markdown('<div class="main-title">💻 Welcome to the NLP Based Recommendation System 💻</div>', unsafe_allow_html=True)
-st.markdown('<div class="intro-subtitle">Your one-stop solution for finding the best recommendation for you! 💡</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">💻 NLP Based Recommendation System 💻</div>', unsafe_allow_html=True)
+st.markdown('<div style="font-size: 1.5em; color: #f9a8d4; text-align: center; text-shadow: 0 0 8px rgba(249, 168, 212, 0.8);">Your one-stop solution for finding the best recommendations! 💡</div>', unsafe_allow_html=True)
 
 st.text("")
 st.text("")
 # Load Data
-
-
 
 # Tabs for each recommendation system
 tab1, tab2, tab3, tab4 = st.tabs(["🏠 Home", "📋 Content-Based Recommendation", "🤝 Collaborative Recommendation", "🔀 Hybrid Recommendation"])
 
 # Home Tab Content
 with tab1:
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
     st.markdown('<div class="system-content">👋 About Me</div>', unsafe_allow_html=True)
     st.markdown("""
         <div class="content">
@@ -156,10 +262,11 @@ with tab1:
             I aim to enhance users' experiences by recommending the most relevant courses tailored to their interests. ✨
         </div>
     """, unsafe_allow_html=True)
-
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # Content-Based Recommendation Tab
 with tab2:
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
     st.markdown('<div class="system-content">📋 Content-Based Recommendation System</div><br>', unsafe_allow_html=True)
     
     
@@ -177,41 +284,33 @@ with tab2:
 
     # Applying Preprocessor Function
     data['Preprocessed_Tags'] = data['Tags'].apply(text_preprocessor)
-
-    # Vectorizer
-    vectorizer = TfidfVectorizer(
-        max_features=1500,
-        ngram_range=(1, 2),
-        stop_words='english',
-        max_df=0.8,
-        min_df=2
-    )
-
-    # Fitting to Preprocessed Column
-    tfidf_matrix = vectorizer.fit_transform(data['Preprocessed_Tags'])
-
-    # Calculating Similarities
-    cosine_matrix = cosine_similarity(tfidf_matrix, tfidf_matrix)
-
-    # Define recommendation function
-    def get_recommendations(title, cosine_sim=cosine_matrix, data=data, top_n=5):
-        try:
-            idx = data.loc[data['Title'] == title].index[0]  # Faster lookup with .loc
-            sim_scores = sorted(
-                enumerate(cosine_sim[idx]), key=lambda x: x[1], reverse=True
-            )[1 : top_n + 1]  # Skip the first (itself)
-            course_indices = [i[0] for i in sim_scores]
-            return data.iloc[course_indices][['Title', 'Description']]
-        except IndexError:
-            st.error("The selected title was not found. Please choose a valid course.")
     
-    st.markdown("""
-        <div class="content">
-            <span class="highlight">📝 Data Collection:</span> Scraped comprehensive course data from the 
-            <a href="https://ocw.mit.edu/collections/environment/" target="_blank" style="color: #2980B9;">MIT OpenCourseWare Environment & Sustainability</a> sections. 
-            This dataset was utilized to create a system that recommends courses based on content similarity. 💡
-        </div><br>
-    """, unsafe_allow_html=True)
+    # Vectorization using TF-IDF
+    vectorizer = TfidfVectorizer()
+    tags_matrix = vectorizer.fit_transform(data['Preprocessed_Tags'])
+    
+    # Cosine Similarity Matrix
+    cosine_sim = cosine_similarity(tags_matrix)
+    
+    # Function to get recommendations
+    def get_recommendations(course, cosine_sim=cosine_sim, n=5):
+        # Get index of the course
+        idx = data[data['Title'] == course].index[0]
+        
+        # Get pairwise similarity scores
+        sim_scores = list(enumerate(cosine_sim[idx]))
+        
+        # Sort courses based on similarity scores
+        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+        
+        # Get the top n most similar courses
+        sim_scores = sim_scores[1:n+1]  # Exclude itself
+        
+        # Get course indices
+        course_indices = [i[0] for i in sim_scores]
+        
+        # Return the top n most similar courses
+        return data[['Title']].iloc[course_indices]
     
     selected_course = st.selectbox("🔍 Choose a course", ["Please Select"] + list(data['Title'].values))
     
@@ -239,26 +338,28 @@ with tab2:
                         
                         # Display clickable course title
                         st.markdown(
-                            f"<a href='{row['Link']}' target='_blank' style='color: #2980B9; font-weight: bold;'>{row['Title']}</a>",
+                            f"<a href='{row['Link']}' target='_blank' style='color: #93c5fd; font-weight: bold;'>{row['Title']}</a>",
                             unsafe_allow_html=True
                         )
         else:
             st.warning("⚠️ Please select a course from the dropdown to proceed.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# Collaborative Recommendation TabCleaned_data
+# Collaborative Recommendation Tab
 
 with tab3:
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
     st.markdown('<div class="system-content">🤝 Item-Item Collaborative Movie Recommendation System</div>', unsafe_allow_html=True)
     st.text(" ")
     st.markdown("""
         <div class="content">
             <span class="highlight">📝 Data Collection:</span> Used the 
-            <a href="https://grouplens.org/datasets/movielens/100k/" target="_blank" style="color: #2980B9;">MovieLens 100K Dataset</a>, 
+            <a href="https://grouplens.org/datasets/movielens/100k/" target="_blank" style="color: #93c5fd;">MovieLens 100K Dataset</a>, 
             which includes user ratings for movies. This dataset enabled the creation of a recommendation system that identifies item-item similarities 
             based on user preferences 🎥.
             <span class="highlight"><br>🔗 Additionally,</span>
              movie metadata such as the cover images and IMDb URLs are collected using the 
-            <a href="https://pypi.org/project/IMDbPY/" target="_blank" style="color: #2980B9;">IMDbPY library</a>, which allows access to movie information, including movie posters and links to the IMDb pages. 
+            <a href="https://pypi.org/project/IMDbPY/" target="_blank" style="color: #93c5fd;">IMDbPY library</a>, which allows access to movie information, including movie posters and links to the IMDb pages. 
             If the movie image is not available, a default placeholder image is displayed.
         </div>
     """, unsafe_allow_html=True)
@@ -287,7 +388,7 @@ with tab3:
                 
                 # Return a default image if the movie image is not available
                 if not image_url:
-                    image_url = "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
+                    image_url = "https://user-images.githubusercontent.com/0/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
                 
                 return f"https://www.imdb.com/title/tt{movie_id}/", image_url
             else:
@@ -324,23 +425,25 @@ with tab3:
                         )
         else:
             st.warning("⚠️ Please select a movie from the dropdown to proceed.")
-
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # Hybrid Recommendation Tab
 with tab4:
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
     st.markdown('<div class="system-content">🤝 Hybrid Movie Recommendation System</div>', unsafe_allow_html=True)
     st.text(" ")
     st.markdown("""
         <div class="content"><center>
             Because of complexity of app hybrid system is shifted to the  
             <span class="highlight">
-            <a href="https://nlp-powered-recommendation-system-second-part.streamlit.app/" target="_blank" style="color: #2980B9;">App</a></span>
+            <a href="https://nlp-powered-recommendation-system-second-part.streamlit.app/" target="_blank" style="color: #93c5fd;">App</a></span>
             <center>
         </div>
     """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # Footer
 st.markdown("""
     <div class="footer">
-        Developed by <a href="https://portfolio-sigma-mocha-67.vercel.app/" target="_blank" style="color: #2980B9;">Muhammad Umer Khan</a>. Powered by Machine Learning. 🧠
+        Developed by <a href="https://portfolio-sigma-mocha-67.vercel.app/" target="_blank">Muhammad Umer Khan</a>. Powered by Machine Learning. 🧠
     </div>""", unsafe_allow_html=True)
