@@ -208,149 +208,157 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Header Section
-st.markdown('<div class="main-title">🔄  Hybrid Recommendation System 🔄 </div>', unsafe_allow_html=True)
-st.markdown('<div style="font-size: 1.5em; color: #f9a8d4; text-align: center; text-shadow: 0 0 8px rgba(249, 168, 212, 0.8);">Your one-stop solution for finding the best recommendation for you! 💡</div>', unsafe_allow_html=True)
+# Load Datasets
+@st.cache_data
+def load_data():
+    # movies = pd.read_csv('./data/movies.dat', sep='::', names=['MovieID', 'Title', 'Genres'], engine='python', encoding='latin-1')
+    # ratings = pd.read_csv('./data/ratings.dat', sep='::', names=['UserID', 'MovieID', 'Ratings', 'Timestamp'], engine='python', encoding='latin-1')
+    ratings = pd.read_csv('./Data/ml-1m/ratings.csv', sep='\t', usecols=['UserID', 'MovieID', 'Ratings'])
+    movies = pd.read_csv('./Data/ml-1m/movies.csv', sep='\t', usecols=['MovieID', 'Title', 'Genres'])
+    return movies, ratings
 
-# Load Data
-ratings = pd.read_csv('./Data/ml-1m/ratings.csv', sep='\t', usecols=['UserID', 'MovieID', 'Ratings'])
-movies = pd.read_csv('./Data/ml-1m/movies.csv', sep='\t', usecols=['MovieID', 'Title', 'Genres'])
+movies, ratings = load_data()
 
-# IMDb Metadata Fetching
-def get_imdb_url(movie_title):
-    ia = IMDb()
+# Precompute SVD Predictions
+@st.cache_data
+def compute_svd_predictions(ratings):
+    ratings_matrix = ratings.pivot(index='UserID', columns='MovieID', values='Ratings').fillna(0)
+    matrix = ratings_matrix.to_numpy()
+    user_ratings_mean = np.mean(matrix, axis=1)
+    ratings_demeaned = matrix - user_ratings_mean.reshape(-1, 1)
+    U, sigma, Vt = svds(ratings_demeaned, k=50)
+    sigma = np.diag(sigma)
+    preds = np.dot(np.dot(U, sigma), Vt) + user_ratings_mean.reshape(-1, 1)
+    preds_df = pd.DataFrame(preds, columns=ratings_matrix.columns, index=ratings_matrix.index)
+    return preds_df
+
+preds = compute_svd_predictions(ratings)
+
+# Precompute Cosine Similarity Matrix
+@st.cache_data
+def compute_cosine_similarity(movies):
+    tfidf = TfidfVectorizer(stop_words='english')
+    tfidf_matrix = tfidf.fit_transform(movies['Genres'])
+    cosine_sim_matrix = cosine_similarity(tfidf_matrix, tfidf_matrix)
+    cosine_sim_df = pd.DataFrame(cosine_sim_matrix, index=movies['MovieID'], columns=movies['MovieID'])
+    return cosine_sim_df
+
+cosine_sim_matrix = compute_cosine_similarity(movies)
+
+# Function to Get IMDB URL and Image
+ia = IMDb()
+@st.cache_data
+def get_imdb_url(movie_name):
     try:
-        search_results = ia.search_movie(movie_title)
-        if search_results:
-            movie = search_results[0]
-            movie_id = movie.movieID
-            image_url = movie.get('full-size cover url') or "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
-            return f"https://www.imdb.com/title/tt{movie_id}/", image_url
-        return None, "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
-    except Exception:
-        return None, "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
+        year = movie_name[-5:-1] if movie_name[-1] == ')' else None
+        movie_name_clean = movie_name[:-7] if year else movie_name
+        movies = ia.search_movie(movie_name_clean)
+        if movies:
+            movie = movies[0]
+            ia.update(movie, info=['main'])
+            imdb_id = movie.movieID
+            imdb_url = f"https://www.imdb.com/title/tt{imdb_id}/"
+            poster_url = movie.get('full-size cover url')
+            return imdb_url, poster_url
+    except Exception as e:
+        st.warning(f"Error fetching IMDb data for {movie_name}: {e}")
+    return "#", "https://via.placeholder.com/150"
 
-# Tab Sections
-st.text("")
-st.text("")
-tab1, tab2, tab3, tab4 = st.tabs(["🏠Home", "📋 Content-Based Model", "🤝 Collaborative Model", "🔀 Hybrid Model"])
+# Tabs for Different Recommendation Types
+tab1, tab2, tab3, tab4 = st.tabs(["🏠 Home", "🔄 Collaborative Filtering", "📖 Content-Based Filtering", "🔀 Hybrid Model"])
 
 with tab1:
     st.markdown('<div class="main-container">', unsafe_allow_html=True)
     st.markdown('<div class="system-content">👋 About Me</div>', unsafe_allow_html=True)
     st.markdown("""
-    <div class="content">
-        Hi! I’m <span class="highlight">Muhammad Umer Khan</span>, an aspiring Data Scientist passionate about 
-        <span class="highlight">🎥 Recommendation Systems</span>, 🤖 <span class="highlight">Machine Learning</span>, and <span class="highlight">NLP</span>. 
-        With hands-on experience in building intelligent systems, I aim to combine my technical expertise with creativity 
-        to solve real-world problems. Currently, I am pursuing my Bachelor’s in Computer Science and actively exploring innovative projects. 🚀
-    </div>
+        <div class="content">
+            Hi! I’m <span class="highlight">Muhammad Umer Khan</span>, a dedicated Data Scientist and Machine Learning enthusiast with a Bachelor’s in Computer Science. 
+            With hands-on experience in <span class="highlight">🤖 Natural Language Processing (NLP)</span>, 🧠 Machine Learning, and MLOps, I specialize in building intelligent systems, 
+            from data pipelines to deployable applications. My journey includes developing recommendation systems, optimizing ANN models, and integrating advanced LLMs, 
+            all while pursuing excellence in real-world problem-solving. 🚀
+        </div>
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="section-title">🎯 Project Overview</div>', unsafe_allow_html=True)
     st.markdown("""
-    <div class="content">
-        Welcome to my Hybrid Recommendation System! This project is a result of my efforts to create a robust, 
-        user-friendly platform for personalized movie recommendations. Here's what it includes:
-        <ul>
-            <li><span class="highlight">📋 Content-Based Filtering</span>: Uses movie metadata like genres to find similar movies based on user preferences.</li>
-            <li><span class="highlight">🤝 Collaborative Filtering</span>: Leverages user interactions (ratings) to recommend movies based on patterns and similarities among users.</li>
-            <li><span class="highlight">🔄 Hybrid Model</span>: Combines the strengths of content-based and collaborative filtering for enhanced and diverse recommendations.</li>
-            <li><span class="highlight">🌐 Deployment</span>: Built with Streamlit for a seamless and interactive user experience.</li>
-        </ul>
-    </div>
+        <div class="content">
+            This project is a state-of-the-art movie recommendation system, showcasing a complete MLOps pipeline and advanced AI integration. Here's what I've achieved:
+            <ul>
+                <li><span class="highlight">📊 Exploratory Data Analysis (EDA)</span>: Analyzed the dataset to uncover insights, patterns, and ensure data quality.</li>
+                <li><span class="highlight">🛠 Data Preprocessing</span>: Cleaned, transformed, encoded features, and balanced data with SMOTEENN for robust training.</li>
+                <li><span class="highlight">🔗 Model Development</span>: Built an Artificial Neural Network (ANN) for classifying loan applications into approved or denied categories.</li>
+                <li><span class="highlight">⚙️ Model Optimization</span>: Tuned hyperparameters and applied dropout layers to enhance performance metrics (accuracy, precision, recall, F1-score).</li>
+                <li><span class="highlight">📈 Evaluation</span>: Achieved ~94% accuracy with comprehensive metrics, logged via MLflow for tracking.</li>
+                <li><span class="highlight">📦 Model Registry</span>: Registered the model in MLflow with versioning and aliases for production readiness.</li>
+                <li><span class="highlight">🌐 Deployment</span>: Developed an interactive Streamlit app with real-time predictions, batch processing, and LLM-powered analysis.</li>
+                <li><span class="highlight">💬 LLM Integration</span>: Added LLM (Mixtral-8x7B via Grok API) for loan approval predictions and customer sentiment analysis.</li>
+                <li><span class="highlight">🧩 MLOps Pipeline</span>: Designed a modular pipeline (ingestion to deployment) with logging and error handling.</li>
+            </ul>
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="section-title">📂 Data Overview</div>', unsafe_allow_html=True)
+    st.markdown("""
+        <div class="content">
+            The
+            <a href="https://www.kaggle.com/competitions/playground-series-s4e10" target="_blank" style="color: #93c5fd;">Dataset</a>
+            used in this project contains key attributes for loan approval prediction. Here's a summary:
+            <ul>
+                <li><span class="highlight">📜 Features</span>: Includes age, income, home ownership, employment length, loan amount, interest rate, credit history, and more.</li>
+                <li><span class="highlight">⚖️ Class Balance</span>: Balanced with SMOTEENN to ensure fair evaluation.</li>
+                <li><span class="highlight">🔍 Feature Engineering</span>: Derived loan-to-income ratio and other features to boost prediction accuracy.</li>
+                <li><span class="highlight">📊 Insights</span>: 
+                    <ul>
+                        <li>Higher incomes positively correlate with loan approvals.</li>
+                        <li>Employment stability significantly influences decisions.</li>
+                        <li>High-interest rates increase the likelihood of denial.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="section-title">💻 Technologies & Tools</div>', unsafe_allow_html=True)
     st.markdown("""
         <div class="content">
             <ul>
-                <li><span class="highlight">🔤 Languages & Libraries</span>: Python, Pandas, Scikit-Learn, SciPy, TF-IDF, IMDbPY.</li>
-                <li><span class="highlight">⚙️ Approaches</span>: Content-Based Filtering, Collaborative Filtering (SVD), Hybrid Methods.</li>
-                <li><span class="highlight">🌐 Deployment</span>: Streamlit for web-based interactive systems.</li>
+                <li><span class="highlight">🔤 Languages & Libraries</span>: Python, Pandas, NumPy, Scikit-learn, TensorFlow/Keras, Imbalanced-learn, Matplotlib, Seaborn, LangChain, MLflow, Joblib.</li>
+                <li><span class="highlight">⚙️ Methods</span>: Feature Engineering, Artificial Neural Networks (ANN), SMOTEENN, Hyperparameter Tuning, MLOps.</li>
+                <li><span class="highlight">🌐 Deployment</span>: Streamlit for interactive web apps, deployable on cloud platforms.</li>
+                <li><span class="highlight">📊 Visualization Tools</span>: Matplotlib and Seaborn for EDA and insights.</li>
+                <li><span class="highlight">🧠 NLP & LLM</span>: Grok API (Mixtral-8x7B) for advanced predictions and sentiment analysis.</li>
+                <li><span class="highlight">📦 MLOps Tools</span>: MLflow for model tracking, versioning, and registry.</li>
             </ul>
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="section-title">🌟 Why This Project?</div>', unsafe_allow_html=True)
+    st.markdown("""
+        <div class="content">
+            This project exemplifies my ability to design, implement, and deploy a full MLOps pipeline, integrating cutting-edge AI technologies like ANN and LLM. 
+            By solving a real-world loan approval challenge, it highlights my skills in data science, software engineering, and user-focused development. 
+            My goal is to empower data-driven decisions with scalable, accessible solutions. ✨
         </div>
     """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 with tab2:
     st.markdown('<div class="main-container">', unsafe_allow_html=True)
-    st.markdown('<div class="system-content">📋 Content-Based Model</div>', unsafe_allow_html=True)
-    st.text(" ")
+    st.markdown('<div class="system-content">🔄 Collaborative Filtering</div>', unsafe_allow_html=True)
     st.markdown("""
         <div class="content">
-            <span class="highlight">📝 Data Collection:</span> Used the 
-            <a href="https://grouplens.org/datasets/movielens/1m/" target="_blank" style="color: #93c5fd;">MovieLens 1M Dataset</a>, 
-            which includes movie metadata such as genres. This dataset enabled the creation of a content-based recommendation system that identifies movie similarities 
-            based on genres 🎥.
-            <span class="highlight"><br>🔗 Additionally,</span>
-             movie metadata such as the cover images and IMDb URLs are collected using the 
-            <a href="https://pypi.org/project/IMDbPY/" target="_blank" style="color: #93c5fd;">IMDbPY library</a>, which allows access to movie information, including movie posters and links to the IMDb pages. 
-            If the movie image is not available, a default placeholder image is displayed.
+            This system recommends movies based on user ratings and patterns. Using Singular Value Decomposition (SVD), 
+            it predicts ratings for unseen movies and suggests the top ones a user might like. 🎥
         </div>
     """, unsafe_allow_html=True)
-
-    # Preprocess Genres
-    movies['Genres'] = movies['Genres'].str.replace('|', ' ', regex=False)
-    tfidf = TfidfVectorizer(stop_words='english')
-    tfidf_matrix = tfidf.fit_transform(movies['Genres'])
-    cosine_sim_matrix = cosine_similarity(tfidf_matrix)
-    st.text(" ")
-    selected_movie = st.selectbox("🎥 Select a Movie", ["Please Select"] + list(movies['Title']))
-    n_recommendations = st.slider("🔢 Number of Recommendations", 1, 10, 5)
-
-    if st.button("🎯 Get Recommendations"):
-        if selected_movie != "Please Select":
-            # Get index of the selected movie
-            idx = movies[movies['Title'] == selected_movie].index[0]
-            sim_scores = list(enumerate(cosine_sim_matrix[idx]))
-            sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-            sim_scores = sim_scores[1:n_recommendations + 1]  # Exclude itself
-            movie_indices = [i[0] for i in sim_scores]
-            recommendations = movies['Title'].iloc[movie_indices]
-            st.markdown("<div class='recommendation-title'>🎬 Recommended Movies:</div>", unsafe_allow_html=True)
-            for i in range(0, len(recommendations), 4):
-                for cols, movie in zip(st.columns(4), recommendations[i:i + 4]):
-                    imdb_url, image_url = get_imdb_url(movie)
-                    with cols:
-                        st.image(image_url, use_column_width=True)
-                        st.markdown(f"[🎬 {movie}]({imdb_url})", unsafe_allow_html=True)
-        else:
-            st.warning("⚠️ Please select a movie from the dropdown to proceed.")
-    st.markdown('</div>', unsafe_allow_html=True)
-
-with tab3:
-    st.markdown('<div class="main-container">', unsafe_allow_html=True)
-    st.markdown('<div class="system-content">🤝 Collaborative Model</div>', unsafe_allow_html=True)
-    st.text(" ")
-    st.markdown("""
-        <div class="content">
-            <span class="highlight">📝 Data Collection:</span> Used the 
-            <a href="https://grouplens.org/datasets/movielens/1m/" target="_blank" style="color: #93c5fd;">MovieLens 1M Dataset</a>, 
-            which includes user ratings for movies. This dataset enabled the creation of a collaborative recommendation system that identifies user-item similarities 
-            based on ratings 🎥.
-            <span class="highlight"><br>🔗 Additionally,</span>
-             movie metadata such as the cover images and IMDb URLs are collected using the 
-            <a href="https://pypi.org/project/IMDbPY/" target="_blank" style="color: #93c5fd;">IMDbPY library</a>.
-        </div>
-    """, unsafe_allow_html=True)
-
-    # Collaborative Filtering
-    R = ratings.pivot(index='UserID', columns='MovieID', values='Ratings').fillna(0)
-    R_np = R.to_numpy()
-    user_ratings_mean = np.mean(R_np, axis=1)
-    R_demeaned = R_np - user_ratings_mean.reshape(-1, 1)
-    U, sigma, Vt = svds(R_demeaned, k=50)
-    sigma = np.diag(sigma)
-    all_user_predicted_ratings = np.dot(np.dot(U, sigma), Vt) + user_ratings_mean.reshape(-1, 1)
-    preds = pd.DataFrame(all_user_predicted_ratings, columns=R.columns)
-    st.text(" ")
-    user_ids = sorted(ratings['UserID'].unique())
-    user_id_input = st.selectbox("👤 Select Recommender ID", ["Please Select"] + [int(u) for u in user_ids])
-    n_recommendations = st.slider("🔢 Number of Recommendations", 1, 10, 5)
-
-    def collaborative_recommendation(user_id, preds, ratings, movies, top_n=20):
-        sorted_user_predictions = preds.loc[user_id - 1].sort_values(ascending=False).reset_index()
+    
+    st.text("")
+    st.text("")
+    st.text("")
+    
+    def collaborative_recommendation(user_id, preds, ratings, movies, top_n = 20):
+        user_prediction = preds.loc[user_id]
+        sorted_user_predictions = user_prediction.sort_values(ascending=False).reset_index()
         sorted_user_predictions.columns = ['MovieID', 'Prediction']
         rated_movie_ids = ratings[ratings['UserID'] == user_id]['MovieID'].tolist()
         recommended_movies = sorted_user_predictions[~sorted_user_predictions['MovieID'].isin(rated_movie_ids)]
@@ -358,7 +366,11 @@ with tab3:
         top_recommendation_details = movies[movies['MovieID'].isin(top_recommendations['MovieID'])]
         return top_recommendation_details
     
-    if st.button("🎯 Get Recommendations"):
+    user_ids = sorted(ratings['UserID'].unique())
+    user_id_input = st.selectbox("👤 Select Recommender ID", ["Please Select"] + [int(u) for u in user_ids], key="collab_user_id")
+    n_recommendations = st.slider("🔢 Number of Collaborative Based Recommendations", 1, 10, 5, key="collab_n_recs")
+    
+    if st.button("🎯 Get Recommendations", key="collab_get_recs"):
         if user_id_input != "Please Select":
             recommendations = collaborative_recommendation(user_id_input, preds, ratings, movies)
             recommendations = recommendations['Title'][:n_recommendations]
@@ -373,7 +385,7 @@ with tab3:
             st.warning("⚠️ Please select a user ID to proceed.")
             
             
-    if st.button("See User Details  👀"):
+    if st.button("See User Details  👀", key="collab_user_details"):
         if user_id_input != "Please Select":
             st.markdown("""
                 <div class="content">
@@ -387,6 +399,64 @@ with tab3:
             st.warning("⚠️ Please select a user ID to proceed.")
     st.markdown('</div>', unsafe_allow_html=True)
 
+with tab3:
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
+    st.markdown('<div class="system-content">📖 Content-Based Filtering</div>', unsafe_allow_html=True)
+    st.markdown("""
+        <div class="content">
+            This system recommends movies similar to a user's favorites based on genres and descriptions. 
+            Using TF-IDF and cosine similarity, it suggests movies with matching content profiles. 🍿
+        </div>
+    """, unsafe_allow_html=True)
+    
+    st.text("")
+    st.text("")
+    st.text("")
+    
+    def content_based_recommendation(user_id, cosine_sim_matrix, ratings, movies, top_n = 20):
+        user_rated_movies = ratings[ratings['UserID'] == user_id]
+        user_rated_movies = user_rated_movies.sort_values(by='Ratings', ascending=False)
+        top_rated_movie_id = user_rated_movies.iloc[0]['MovieID']
+        sim_scores = list(enumerate(cosine_sim_matrix[top_rated_movie_id]))
+        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+        sim_scores = sim_scores[1:top_n + 1]
+        movie_indices = [i[0] for i in sim_scores]
+        recommended_movies = movies.iloc[movie_indices]
+        return recommended_movies
+    
+    user_ids = sorted(ratings['UserID'].unique())
+    user_id_input = st.selectbox("👤 Select Recommender ID", ["Please Select"] + [int(u) for u in user_ids], key="content_user_id")
+    n_recommendations = st.slider("🔢 Number of Content Based Recommendations", 1, 10, 5, key="content_n_recs")
+    
+    if st.button("🎯 Get Recommendations", key="content_get_recs"):
+        if user_id_input != "Please Select":
+            recommendations = content_based_recommendation(user_id_input, cosine_sim_matrix, ratings, movies)
+            recommendations = recommendations['Title'][:n_recommendations]
+            st.markdown("<div class='recommendation-title'>🎬 Recommended Movies:</div>", unsafe_allow_html=True)
+            for i in range(0, len(recommendations), 4):
+                for cols, movie in zip(st.columns(4), recommendations[i:i + 4]):
+                    imdb_url, image_url = get_imdb_url(movie)
+                    with cols:
+                        st.image(image_url, use_column_width=True)
+                        st.markdown(f"[🎬 {movie}]({imdb_url})", unsafe_allow_html=True)
+        else:
+            st.warning("⚠️ Please select a user ID to proceed.")
+            
+            
+    if st.button("See User Details  👀", key="content_user_details"):
+        if user_id_input != "Please Select":
+            st.markdown("""
+                <div class="content">
+                    Selected User Rated Movies Details 🎬:
+                </div>
+            """, unsafe_allow_html=True)
+            user = ratings[ratings['UserID'] == user_id_input]
+            user_details = pd.merge(movies, user, on='MovieID')[['UserID', 'MovieID', 'Title', 'Ratings']]
+            st.table(user_details)
+        else:
+            st.warning("⚠️ Please select a user ID to proceed.")
+    st.markdown('</div>', unsafe_allow_html=True)
+    
 with tab4:
     st.markdown('<div class="main-container">', unsafe_allow_html=True)
     st.markdown('<div class="system-content">🔀 Hybrid Model</div>', unsafe_allow_html=True)
@@ -447,10 +517,10 @@ with tab4:
         return top_recommendation_details
     
     user_ids = sorted(ratings['UserID'].unique())
-    user_id_input = st.selectbox("👤 Select Recommender ID", ["Please Select"] + [int(u) for u in user_ids])
-    n_recommendations = st.slider("🔢 Number of Hybrid Based Recommendations", 1, 10, 5)
+    user_id_input = st.selectbox("👤 Select Recommender ID", ["Please Select"] + [int(u) for u in user_ids], key="hybrid_user_id")
+    n_recommendations = st.slider("🔢 Number of Hybrid Based Recommendations", 1, 10, 5, key="hybrid_n_recs")
     
-    if st.button("✨ Get Hybrid Recommendations"):
+    if st.button("✨ Get Hybrid Recommendations", key="hybrid_get_recs"):
         if user_id_input != "Please Select":
             recommendations = hybrid_recommendation(user_id_input, preds, cosine_sim_matrix, ratings, movies, alpha=0.5, beta=0.5)
             recommendations = recommendations['Title'][:n_recommendations]
@@ -465,7 +535,7 @@ with tab4:
             st.warning("⚠️ Please select a user ID to proceed.")
             
             
-    if st.button("See User Detail  👀"):
+    if st.button("See User Details  👀", key="hybrid_user_details"):
         if user_id_input != "Please Select":
             st.markdown("""
                 <div class="content">
